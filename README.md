@@ -69,7 +69,7 @@ See the upstream `docs/data-contract.md` and `docs/integration.md` for the compl
 
 ## Build
 
-`client.js` is generated. The Harness client runner loads one plain-JS factory, while Pipe Atlas ships ES modules, so `scripts/build-client.mjs` strips module syntax from the vendor files, concatenates them in dependency order, re-declares aliased imports (`escapeHtml as esc`), embeds the demo traces and locale dictionaries, and wraps everything in `window.__ModuleLoader__.load(...)`. The alias step matters: without it the concatenated module throws `esc is not defined` on the first render.
+`client.js` is generated. The Harness client runner loads one plain-JS factory, while Pipe Atlas ships ES modules, so `scripts/build-client.mjs` strips module syntax from the vendor files, concatenates them in dependency order, re-declares aliased imports (`escapeHtml as esc`), embeds the demo traces and locale dictionaries, and wraps everything in `window.__ModuleLoader__.load(...)`. The alias step matters: without it the concatenated module throws `esc is not defined` on the first render. The component tag is content-addressed (`pipe-atlas-<hash>`) so a hot-reloaded Client module defines a fresh element instead of reusing a stale class from the custom-element registry.
 
 ```bash
 npm run build   # regenerate client.js from src/app.js + vendor/

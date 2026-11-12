@@ -39,8 +39,11 @@ assert.match(icon, /<\/svg>\s*$/);
 const source = read('client.js');
 assert.ok(!/^\s*import\s/m.test(source), 'client.js must not contain ESM imports');
 assert.match(source, /window\.__ModuleLoader__\.load\(/);
-assert.match(source, /customElements\.define\('pipe-timeline'/);
-assert.match(source, /const esc = escapeHtml;/, 'aliased imports are re-declared');
+assert.match(source, /customElements\.define\('pipe-atlas-[0-9a-f]{8}'/);
+assert.match(source, /const VIEWER_TAG = 'pipe-atlas-[0-9a-f]{8}';/);
+assert.ok(!/'pipe-timeline'/.test(source), 'the generic tag name is not registered');
+assert.equal((source.match(/const esc = escapeHtml;/g) || []).length, 1, 'the esc alias is declared exactly once');
+assert.ok(source.indexOf('const esc = escapeHtml;') < source.indexOf('// ---- vendor/pipe-timeline.js ----'), 'the esc alias is declared before its consumer');
 assert.match(source, /id: '@local\/dsh-pipe-atlas'/);
 
 let registration = null;
@@ -91,7 +94,9 @@ const api = registration.factory((name) => {
 });
 assert.equal(typeof api.apply, 'function');
 assert.deepEqual([...api.inject].sort(), ['locale', 'slots']);
-assert.ok(customElementsMap.has('pipe-timeline'), 'the Web Component is registered once');
+const viewerTag = source.match(/const VIEWER_TAG = '([^']+)'/) && source.match(/const VIEWER_TAG = '([^']+)'/)[1];
+assert.ok(viewerTag, 'the viewer tag is declared');
+assert.ok(customElementsMap.has(viewerTag), 'the Web Component is registered once');
 
 const injections = [];
 const ctx = {

@@ -8,6 +8,7 @@
 const PANEL_ID = 'dsh-pipe-atlas';
 const NS = 'dsh-pipe-atlas';
 const { useEffect, useRef, useState, useSyncExternalStore } = React;
+const VIEWER_TAG = '__PIPE_ATLAS_VIEWER_TAG__';
 
 const DEMOS = [
   { id: 'scheduling', icon: 'clock' },
@@ -22,7 +23,7 @@ const STILL_THEME = {
 };
 
 const CSS = `
-.pa-root{position:relative;display:flex;height:100%;min-height:0;width:100%;overflow:hidden;background:#f5f7fa;color:#28374c;font:13px/1.5 Inter,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;--pa-bg:#f5f7fa;--pa-surface:#fff;--pa-border:#e7ecf2;--pa-text:#28374c;--pa-muted:#8a96a6;--pa-green:#168f78;--pa-green-light:#ecf6f2;--pa-side:#142533;--pa-mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;color-scheme:light;container-type:inline-size}
+.pa-root{position:relative;display:flex;height:100%;min-height:0;width:100%;overflow:hidden;background:#f5f7fa;color:#28374c;font:13px/1.5 Inter,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;--pa-bg:#f5f7fa;--pa-surface:#fff;--pa-border:#e7ecf2;--pa-text:#28374c;--pa-muted:#8a96a6;--pa-green:#168f78;--pa-green-light:#ecf6f2;--pa-side:#142533;--pa-mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;color-scheme:light}
 .pa-root[data-theme=dark]{--pa-bg:#0e1925;--pa-surface:#14212f;--pa-border:#293a4c;--pa-text:#dbe5ef;--pa-muted:#8a9caf;--pa-green:#65d7bb;--pa-green-light:#203e3d;--pa-side:#101c28;color-scheme:dark}
 .pa-root *{box-sizing:border-box}
 .pa-shell{display:flex;height:100%;min-height:0;width:100%;overflow:hidden}
@@ -30,7 +31,8 @@ const CSS = `
 .pa-glyph svg{display:block}
 
 /* rail */
-.pa-rail{flex:none;width:208px;display:flex;flex-direction:column;min-height:0;overflow:hidden;background:var(--pa-side);color:#9aafbd;padding:26px 15px 14px}
+.pa-rail{flex:none;width:208px;display:flex;flex-direction:column;min-height:0;overflow-x:hidden;overflow-y:auto;scrollbar-width:none;background:var(--pa-side);color:#9aafbd;padding:26px 15px 14px}
+.pa-rail::-webkit-scrollbar{display:none}
 .pa-brand{display:flex;align-items:center;gap:11px;padding:0 8px;color:#f3f9fc;flex:none}
 .pa-brand-mark{width:28px;height:34px;position:relative;flex:none}
 .pa-brand-mark i{position:absolute;left:0;width:21px;height:5px;border-radius:2px;background:#70dbb8}
@@ -68,6 +70,7 @@ const CSS = `
 .pa-rail-version{display:flex;align-items:center;gap:6px;border-top:1px solid #293e4a;margin-top:13px;padding:13px 8px 0;color:#668291;font-size:9px;white-space:nowrap}
 .pa-rail-version .pa-status-dot{width:4px;height:4px;border-radius:50%;background:#74b79b;flex:none}
 .pa-rail-version span{margin-left:auto;font-family:var(--pa-mono)}
+.pa-rail-version .pa-version-text{margin-left:0;font-family:inherit}
 
 /* page */
 .pa-page{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--pa-bg);color:var(--pa-text)}
@@ -117,7 +120,7 @@ const CSS = `
 .pa-error span{flex:1;min-width:0;overflow-wrap:anywhere;white-space:pre-wrap}
 .pa-error button{flex:none;border:0;background:transparent;color:inherit;padding:0 2px;line-height:1;cursor:pointer}
 .pa-stage{position:relative;min-height:320px}
-.pa-stage>pipe-timeline{display:block}
+.pa-stage>.pa-viewer{display:block}
 .pa-stage.is-dragging::after{content:"";position:absolute;inset:6px;border:1.5px dashed var(--pa-green);border-radius:10px;background:color-mix(in srgb,var(--pa-green) 6%,transparent);pointer-events:none;z-index:2}
 .pa-drop-hint{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:3;padding:5px 11px;border-radius:999px;background:var(--pa-surface);border:1px solid var(--pa-border);box-shadow:0 6px 18px #11233322;font-size:10.5px;color:var(--pa-muted);pointer-events:none;white-space:nowrap}
 .pa-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;color:var(--pa-muted);font-size:9px;padding:19px 1px 0}
@@ -159,10 +162,46 @@ const CSS = `
 .pa-note{font-size:10.5px;color:var(--pa-muted);line-height:1.85;margin:12px 0 0}
 .pa-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:140;max-width:min(460px,calc(100vw - 48px));padding:10px 18px;border:1px solid #42715f;border-radius:8px;background:#17392f;color:#c9f4e0;font-size:11.5px;box-shadow:0 10px 40px #0002;text-align:center}
 
-@container (max-width:1180px){.pa-rail{width:188px;padding-left:12px;padding-right:12px}.pa-scroll{padding:22px 22px 15px}.pa-brand-name{font-size:19px}.pa-rail-card{padding:11px}.pa-heading h1{font-size:24px}}
-@container (max-width:1000px){.pa-rail{width:64px;padding:24px 7px 14px;align-items:center}.pa-brand{padding:0}.pa-brand-mark{width:26px;height:32px}.pa-brand-name,.pa-brand small,.pa-rail-label,.pa-demo-text,.pa-rail-card,.pa-rail-version span,.pa-nav span.pa-nav-text,.pa-nav .pa-kbd{display:none}.pa-rail-label{padding:0}.pa-nav{width:100%;margin-top:28px}.pa-nav button{justify-content:center;padding:12px}.pa-nav .pa-nav-dot{display:none}.pa-demos{width:100%;margin-top:12px}.pa-demo-card{justify-content:center;padding:8px}.pa-demo-dot{display:none}.pa-rail-bottom{padding-top:15px;width:100%}.pa-rail-version{justify-content:center;padding-left:0;padding-right:0;border-top:0;margin-top:0}.pa-rail-version .pa-status-dot{display:none}.pa-scroll{padding:20px 20px 14px}.pa-local,.pa-src{display:none}.pa-heading h1{font-size:23px}}
-@container (max-width:760px){.pa-rail{display:none}.pa-scroll{padding:18px 16px 13px}.pa-topbar{padding:0 16px}.pa-heading h1{font-size:22px}.pa-heading p{font-size:10px}.pa-heading{align-items:flex-start;gap:10px}.pa-actions{padding-top:16px}.pa-heading .pa-button span.pa-btn-label{display:none}.pa-button{padding:0 10px}.pa-dataset-meta .pa-device,.pa-dataset-meta .pa-meta-dot{display:none}.pa-footer-right{display:none}}
-@container (max-width:520px){.pa-eyebrow{font-size:7px;letter-spacing:1.2px}.pa-heading h1{font-size:21px}.pa-heading p{display:none}.pa-scroll{padding:16px 12px 12px}.pa-dataset-name strong{max-width:180px}.pa-actions .pa-button{font-size:10px;padding:0 8px}.pa-dialog{padding:18px}}
+.pa-root[data-layout=mid] .pa-rail{width:188px;padding-left:12px;padding-right:12px}
+.pa-root[data-layout=mid] .pa-scroll{padding:22px 22px 15px}
+.pa-root[data-layout=mid] .pa-brand-name{font-size:19px}
+.pa-root[data-layout=mid] .pa-rail-card{padding:11px}
+.pa-root[data-layout=mid] .pa-heading h1{font-size:24px}
+.pa-root[data-layout=rail] .pa-rail{width:64px;padding:24px 7px 14px;align-items:center}
+.pa-root[data-layout=rail] .pa-brand{padding:0}
+.pa-root[data-layout=rail] .pa-brand-mark{width:26px;height:32px}
+.pa-root[data-layout=rail] .pa-brand-name,.pa-root[data-layout=rail] .pa-brand small,.pa-root[data-layout=rail] .pa-rail-label,.pa-root[data-layout=rail] .pa-demo-text,.pa-root[data-layout=rail] .pa-rail-card,.pa-root[data-layout=rail] .pa-rail-version span,.pa-root[data-layout=rail] .pa-rail-version .pa-version-text,.pa-root[data-layout=rail] .pa-nav span.pa-nav-text,.pa-root[data-layout=rail] .pa-nav .pa-kbd{display:none}
+.pa-root[data-layout=rail] .pa-nav{width:100%;margin-top:28px}
+.pa-root[data-layout=rail] .pa-nav button{justify-content:center;padding:12px}
+.pa-root[data-layout=rail] .pa-nav .pa-nav-dot{display:none}
+.pa-root[data-layout=rail] .pa-demos{width:100%;margin-top:12px}
+.pa-root[data-layout=rail] .pa-demo-card{justify-content:center;padding:8px}
+.pa-root[data-layout=rail] .pa-demo-dot{display:none}
+.pa-root[data-layout=rail] .pa-rail-bottom{padding-top:15px;width:100%}
+.pa-root[data-layout=rail] .pa-rail-version{justify-content:center;padding-left:0;padding-right:0;border-top:0;margin-top:0}
+.pa-root[data-layout=rail] .pa-rail-version .pa-status-dot{display:none}
+.pa-root[data-layout=rail] .pa-scroll{padding:20px 20px 14px}
+.pa-root[data-layout=rail] .pa-local,.pa-root[data-layout=rail] .pa-src{display:none}
+.pa-root[data-layout=rail] .pa-heading h1{font-size:23px}
+.pa-root[data-layout=narrow] .pa-rail,.pa-root[data-layout=tiny] .pa-rail{display:none}
+.pa-root[data-layout=narrow] .pa-scroll,.pa-root[data-layout=tiny] .pa-scroll{padding:18px 16px 13px}
+.pa-root[data-layout=narrow] .pa-topbar,.pa-root[data-layout=tiny] .pa-topbar{padding:0 16px}
+.pa-root[data-layout=narrow] .pa-heading h1{font-size:22px}
+.pa-root[data-layout=narrow] .pa-heading p{font-size:10px}
+.pa-root[data-layout=narrow] .pa-heading{align-items:flex-start;gap:10px}
+.pa-root[data-layout=narrow] .pa-actions{padding-top:16px}
+.pa-root[data-layout=narrow] .pa-heading .pa-button span.pa-btn-label{display:none}
+.pa-root[data-layout=narrow] .pa-button{padding:0 10px}
+.pa-root[data-layout=narrow] .pa-dataset-meta .pa-device,.pa-root[data-layout=narrow] .pa-dataset-meta .pa-meta-dot{display:none}
+.pa-root[data-layout=narrow] .pa-footer-right{display:none}
+.pa-root[data-layout=tiny] .pa-eyebrow{font-size:7px;letter-spacing:1.2px}
+.pa-root[data-layout=tiny] .pa-heading h1{font-size:21px}
+.pa-root[data-layout=tiny] .pa-heading p{display:none}
+.pa-root[data-layout=tiny] .pa-scroll{padding:16px 12px 12px}
+.pa-root[data-layout=tiny] .pa-dataset-name strong{max-width:180px}
+.pa-root[data-layout=tiny] .pa-actions .pa-button{font-size:10px;padding:0 8px}
+.pa-root[data-layout=tiny] .pa-dialog{padding:18px}
+.pa-root[data-layout=tiny] .pa-btn-label{display:none}
 @media (prefers-reduced-motion:reduce){.pa-root *{transition:none!important}}
 `;
 
@@ -190,6 +229,7 @@ function PipeAtlasPanel(props) {
   const themeStore = props.themeStore && props.themeStore.subscribe ? props.themeStore : STILL_THEME;
   const theme = useSyncExternalStore(themeStore.subscribe, themeStore.get, themeStore.get);
 
+  const rootRef = useRef(null);
   const scrollRef = useRef(null);
   const stageRef = useRef(null);
   const viewerRef = useRef(null);
@@ -208,13 +248,29 @@ function PipeAtlasPanel(props) {
   const [helpOpen, setHelpOpen] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [notice, setNotice] = useState(null);
+  const [layout, setLayout] = useState('wide');
 
   const say = (text) => setNotice({ id: `${Date.now()}-${Math.random()}`, text });
 
   useEffect(() => {
+    const node = rootRef.current;
+    if (!node || typeof ResizeObserver === 'undefined') return undefined;
+    const apply = (width) => {
+      setLayout(width >= 1180 ? 'wide' : width >= 1000 ? 'mid' : width >= 760 ? 'rail' : width >= 520 ? 'narrow' : 'tiny');
+    };
+    const observer = new ResizeObserver((entries) => {
+      apply(entries[0]?.contentRect?.width || node.clientWidth);
+    });
+    observer.observe(node);
+    apply(node.clientWidth);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return undefined;
-    const viewer = document.createElement('pipe-timeline');
+    const viewer = document.createElement(VIEWER_TAG);
+    viewer.className = 'pa-viewer';
     viewer.setAttribute('theme', themeStore.get() === 'dark' ? 'dark' : 'light');
     viewer.setAttribute('aria-label', 'Pipe Atlas execution timeline');
     const onLoad = (event) => {
@@ -472,7 +528,7 @@ function PipeAtlasPanel(props) {
       onClick: () => setHelpOpen(false),
     }, t('action.close'))))) : null;
 
-  return h('div', { className: 'pa-root', 'data-theme': theme },
+  return h('div', { className: 'pa-root', 'data-theme': theme, 'data-layout': layout, ref: rootRef },
     h('style', null, CSS),
     h('div', { className: 'pa-shell' },
       h('aside', { className: 'pa-rail', 'aria-label': 'Pipe Atlas' },
@@ -481,15 +537,15 @@ function PipeAtlasPanel(props) {
           h('span', { className: 'pa-brand-name' }, 'Pipe', h('b', null, 'Atlas'), h('small', null, 'EXECUTION EXPLORER'))),
         h('div', { className: 'pa-rail-label' }, t('rail.workspace'), h('span', null, '01')),
         h('nav', { className: 'pa-nav', 'aria-label': t('rail.workspace') },
-          h('button', { type: 'button', className: 'active', onClick: focusTimeline },
+          h('button', { type: 'button', className: 'active', 'aria-label': t('rail.timeline'), title: t('rail.timeline'), onClick: focusTimeline },
             h(Glyph, { name: 'activity', size: 15 }),
             h('span', { className: 'pa-nav-text' }, t('rail.timeline')),
             h('span', { className: 'pa-nav-dot', 'aria-hidden': true })),
-          h('button', { type: 'button', onClick: () => { setImportError(''); setImportOpen(true); } },
+          h('button', { type: 'button', 'aria-label': t('rail.import'), title: t('rail.import'), onClick: () => { setImportError(''); setImportOpen(true); } },
             h(Glyph, { name: 'upload', size: 15 }),
             h('span', { className: 'pa-nav-text' }, t('rail.import')),
             h('span', { className: 'pa-kbd' }, 'JSON')),
-          h('button', { type: 'button', onClick: () => setHelpOpen(true) },
+          h('button', { type: 'button', 'aria-label': t('rail.embed'), title: t('rail.embed'), onClick: () => setHelpOpen(true) },
             h(Glyph, { name: 'code', size: 15 }),
             h('span', { className: 'pa-nav-text' }, t('rail.embed')),
             h('span', { className: 'pa-kbd' }, '</>'))),
@@ -511,12 +567,12 @@ function PipeAtlasPanel(props) {
           h('div', { className: 'pa-rail-card' },
             h('div', { className: 'pa-rail-card-title' }, h(Glyph, { name: 'code', size: 14 }), t('rail.cardTitle')),
             h('p', null, t('rail.cardBody')),
-            h('button', { type: 'button', onClick: () => setHelpOpen(true) },
+            h('button', { type: 'button', 'aria-label': t('rail.embed'), title: t('rail.embed'), onClick: () => setHelpOpen(true) },
               t('rail.cardAction'),
               h(Glyph, { name: 'arrow', size: 13 }))),
           h('div', { className: 'pa-rail-version' },
             h('i', { className: 'pa-status-dot', 'aria-hidden': true }),
-            'Pipe Atlas', h('span', null, 'v1.2')))),
+            h('span', { className: 'pa-version-text' }, 'Pipe Atlas'), h('span', null, 'v1.2')))),
 
       h('div', { className: 'pa-page' },
         h('header', { className: 'pa-topbar' },
@@ -542,7 +598,7 @@ function PipeAtlasPanel(props) {
               h('div', { className: 'pa-export-wrap', ref: exportRef },
                 h('button', {
                   type: 'button', className: 'pa-button',
-                  'aria-haspopup': 'menu', 'aria-expanded': exportOpen,
+                  'aria-label': t('action.export'), 'aria-haspopup': 'menu', 'aria-expanded': exportOpen,
                   onClick: () => setExportOpen((value) => !value),
                 }, h(Glyph, { name: 'download', size: 14 }),
                 h('span', { className: 'pa-btn-label' }, t('action.export')),
@@ -553,7 +609,7 @@ function PipeAtlasPanel(props) {
                     onClick: () => doExport(kind),
                   }, h('span', null, label), h('small', null, t(`export.${kind}`))))) : null),
               h('button', {
-                type: 'button', className: 'pa-button primary',
+                type: 'button', className: 'pa-button primary', 'aria-label': t('action.import'),
                 onClick: () => { setImportError(''); setImportOpen(true); },
               }, h(Glyph, { name: 'upload', size: 14 }),
               h('span', { className: 'pa-btn-label' }, t('action.import'))))),

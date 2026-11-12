@@ -8,6 +8,7 @@
  * import/export syntax, and the demo traces are embedded as JSON.
  */
 import { readFileSync, writeFileSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -15,7 +16,19 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const read = (file) => readFileSync(join(root, file), 'utf8');
 
 const PACKAGE_NAME = '@local/dsh-pipe-atlas';
+
 const VENDOR_FILES = ['icons.js', 'component-style.js', 'model.js', 'pipe-timeline.js'];
+
+const rawApp = read('src/app.js');
+const tagHash = createHash('sha256')
+  .update(VENDOR_FILES.map((file) => read(`vendor/${file}`)).join('\n'))
+  .update(rawApp)
+  .digest('hex')
+  .slice(0, 8);
+// A content-addressed tag lets a hot-reloaded Client module define a fresh
+// element instead of keeping the stale class already in the registry.
+const VIEWER_TAG = `pipe-atlas-${tagHash}`;
+
 const DEMO_FILES = {
   scheduling: 'scheduling.json',
   network: 'network.json',
@@ -38,7 +51,8 @@ function vendorSource(file) {
   }
   const source = raw
     .replace(/^import\s[^;]*;\s*$/gm, '')
-    .replace(/^export\s+/gm, '');
+    .replace(/^export\s+/gm, '')
+    .replace(/'pipe-timeline'/g, `'${VIEWER_TAG}'`);
   if (/^\s*(import|export)\s/m.test(source)) {
     throw new Error(`vendor/${file} still contains module syntax after transformation`);
   }
@@ -50,7 +64,7 @@ for (const [id, file] of Object.entries(DEMO_FILES)) {
   demos[id] = JSON.parse(read(`vendor/${file}`));
 }
 
-const app = read('src/app.js');
+const app = rawApp.replaceAll('__PIPE_ATLAS_VIEWER_TAG__', VIEWER_TAG);
 const vendorParts = VENDOR_FILES.map((file) => `// ---- vendor/${file} ----\n${vendorSource(file)}`);
 // Keep aliases after the modules that define them but before the component
 // that consumes them, so an element upgrade can never hit a TDZ.
