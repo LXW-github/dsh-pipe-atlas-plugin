@@ -1,0 +1,2930 @@
+{
+  "schemaVersion": "1.0",
+  "metadata": {
+    "title": "MIX → VECTOR · 跨任务流水",
+    "description": "Illustrative 1:1 AIC/AIV pipeline. All durations are synthetic; the timeline is not a cycle-accurate simulator.",
+    "timeUnit": "us",
+    "device": "Ascend · AIC/AIV 1:1",
+    "source": {
+      "kind": "synthetic",
+      "generator": "Pipe Atlas demo"
+    }
+  },
+  "cores": [
+    {
+      "id": "core-0",
+      "label": "Core pair 0",
+      "deviceId": 0
+    },
+    {
+      "id": "core-1",
+      "label": "Core pair 1",
+      "deviceId": 0
+    }
+  ],
+  "lanes": [
+    {
+      "id": "c0-s",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "SCALAR",
+      "label": "SCALAR"
+    },
+    {
+      "id": "c0-v2",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE2",
+      "label": "MTE2"
+    },
+    {
+      "id": "c0-v",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "VECTOR",
+      "label": "VECTOR"
+    },
+    {
+      "id": "c0-v3",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE3",
+      "label": "MTE3"
+    },
+    {
+      "id": "c0-c2",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "MTE2",
+      "label": "MTE2"
+    },
+    {
+      "id": "c0-c1",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "MTE1",
+      "label": "MTE1"
+    },
+    {
+      "id": "c0-c",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "CUBE",
+      "label": "CUBE"
+    },
+    {
+      "id": "c0-f",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "FIXP",
+      "label": "FIXP"
+    },
+    {
+      "id": "c1-s",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "SCALAR",
+      "label": "SCALAR"
+    },
+    {
+      "id": "c1-v2",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "MTE2",
+      "label": "MTE2"
+    },
+    {
+      "id": "c1-v",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "VECTOR",
+      "label": "VECTOR"
+    },
+    {
+      "id": "c1-v3",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "MTE3",
+      "label": "MTE3"
+    },
+    {
+      "id": "c1-c2",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "MTE2",
+      "label": "MTE2"
+    },
+    {
+      "id": "c1-c1",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "MTE1",
+      "label": "MTE1"
+    },
+    {
+      "id": "c1-c",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "CUBE",
+      "label": "CUBE"
+    },
+    {
+      "id": "c1-f",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "FIXP",
+      "label": "FIXP"
+    }
+  ],
+  "kernels": [
+    {
+      "id": "matmul",
+      "label": "matmul_relu",
+      "color": "#1b9c85",
+      "description": "MIX · AIC + AIV 1:1"
+    },
+    {
+      "id": "norm",
+      "label": "rms_norm",
+      "color": "#6d71d5",
+      "description": "VECTOR · dependent input + independent weight"
+    },
+    {
+      "id": "add",
+      "label": "residual_add",
+      "color": "#cb9353",
+      "description": "VECTOR · output epilogue"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "early-start",
+      "label": "Early Start",
+      "description": "Independent MTE2 reads overlap the previous MTE3 tail; dependent reads wait for all producers.",
+      "events": [
+        {
+          "id": "c0-a_alloc",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "bmu.alloc · main",
+          "kind": "allocation",
+          "start": 0,
+          "duration": 2,
+          "args": {
+            "buffer": "L1 / UB",
+            "segment": "MAIN",
+            "note": "Synthetic allocation duration; not a hardware timing claim"
+          }
+        },
+        {
+          "id": "c0-a_args",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 2,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 21,
+            "pc": "0x1004"
+          }
+        },
+        {
+          "id": "c0-a_bias",
+          "laneId": "c0-v2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load bias",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 12,
+          "args": {
+            "bytes": 4096,
+            "source": "GM",
+            "destination": "UB",
+            "segment": "ENTRY"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 22,
+            "pc": "0x1008"
+          }
+        },
+        {
+          "id": "c0-a_load_a",
+          "laneId": "c0-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load A",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 18,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 23,
+            "pc": "0x100c"
+          }
+        },
+        {
+          "id": "c0-a_load_b",
+          "laneId": "c0-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load B",
+          "kind": "transfer",
+          "start": 24,
+          "duration": 14,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 24,
+            "pc": "0x1010"
+          }
+        },
+        {
+          "id": "c0-a_l0",
+          "laneId": "c0-c1",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 38,
+          "duration": 7,
+          "args": {
+            "source": "L1",
+            "destination": "L0A / L0B"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 25,
+            "pc": "0x1014"
+          }
+        },
+        {
+          "id": "c0-a_cube",
+          "laneId": "c0-c",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "matmul 128³",
+          "kind": "compute",
+          "start": 45,
+          "duration": 20,
+          "args": {
+            "shape": [
+              128,
+              128,
+              128
+            ],
+            "accumulation": "fp32"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 26,
+            "pc": "0x1018"
+          }
+        },
+        {
+          "id": "c0-a_fixp",
+          "laneId": "c0-f",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 65,
+          "duration": 8,
+          "args": {
+            "source": "L0C",
+            "destination": "UB",
+            "tightlyCoupledBuffer": "tcb-0"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 27,
+            "pc": "0x101c"
+          }
+        },
+        {
+          "id": "c0-a_flag",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "SET_FLAG · FIX → V",
+          "kind": "marker",
+          "start": 73,
+          "duration": 0,
+          "args": {
+            "flagId": 3
+          }
+        },
+        {
+          "id": "c0-a_relu",
+          "laneId": "c0-v",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "bias + ReLU",
+          "kind": "compute",
+          "start": 73,
+          "duration": 8,
+          "args": {
+            "dtype": "fp16",
+            "buffer": "TAIL / UB"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 29,
+            "pc": "0x1024"
+          }
+        },
+        {
+          "id": "c0-a_store",
+          "laneId": "c0-v3",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "store output A",
+          "kind": "transfer",
+          "start": 81,
+          "duration": 30,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "bytes": 32768,
+            "segment": "TAIL",
+            "note": "The output remains in the tail segment until the transfer retires"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 30,
+            "pc": "0x1028"
+          }
+        },
+        {
+          "id": "c0-a_next",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 75,
+          "duration": 0,
+          "args": {
+            "scope": "next task"
+          }
+        },
+        {
+          "id": "c0-a_fake",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 81,
+          "duration": 0,
+          "args": {
+            "note": "Release scalar execution after the tail store is issued"
+          }
+        },
+        {
+          "id": "c0-b_args",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 83,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 33,
+            "pc": "0x1034"
+          }
+        },
+        {
+          "id": "c0-b_alloc",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "bmu.alloc · entry",
+          "kind": "allocation",
+          "start": 86,
+          "duration": 2,
+          "args": {
+            "buffer": "UB",
+            "segment": "ENTRY",
+            "note": "Entry and previous tail use separate memory segments"
+          }
+        },
+        {
+          "id": "c0-b_w",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load weight B",
+          "kind": "transfer",
+          "start": 88,
+          "duration": 20,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "ready",
+            "bytes": 8192,
+            "note": "Independent of the previous task; can overlap its output store"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 35,
+            "pc": "0x103c"
+          }
+        },
+        {
+          "id": "c0-b_wait",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 108,
+          "duration": 3,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S",
+            "note": "The demo waits before reading the previous task output"
+          }
+        },
+        {
+          "id": "c0-b_x",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load input A → B",
+          "kind": "transfer",
+          "start": 111,
+          "duration": 12,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "producer_kernel(matmul)",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 37,
+            "pc": "0x1044"
+          }
+        },
+        {
+          "id": "c0-b_vec",
+          "laneId": "c0-v",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "rms_norm",
+          "kind": "compute",
+          "start": 124,
+          "duration": 18,
+          "args": {
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 38,
+            "pc": "0x1048"
+          }
+        },
+        {
+          "id": "c0-b_store",
+          "laneId": "c0-v3",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "store output B",
+          "kind": "transfer",
+          "start": 142,
+          "duration": 17,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "segment": "TAIL"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 39,
+            "pc": "0x104c"
+          }
+        },
+        {
+          "id": "c0-b_next",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 138,
+          "duration": 0,
+          "args": {}
+        },
+        {
+          "id": "c0-b_fake",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 142,
+          "duration": 0,
+          "args": {}
+        },
+        {
+          "id": "c0-c_args",
+          "laneId": "c0-s",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 144,
+          "duration": 3,
+          "args": {},
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 42,
+            "pc": "0x1058"
+          }
+        },
+        {
+          "id": "c0-c_w",
+          "laneId": "c0-v2",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load residual",
+          "kind": "transfer",
+          "start": 147,
+          "duration": 8,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 43,
+            "pc": "0x105c"
+          }
+        },
+        {
+          "id": "c0-c_wait",
+          "laneId": "c0-s",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 155,
+          "duration": 4,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S"
+          }
+        },
+        {
+          "id": "c0-c_x",
+          "laneId": "c0-v2",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load input B → C",
+          "kind": "transfer",
+          "start": 159,
+          "duration": 8,
+          "args": {
+            "dependency": "producer_kernel(norm)",
+            "source": "GM",
+            "destination": "UB"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 45,
+            "pc": "0x1064"
+          }
+        },
+        {
+          "id": "c0-c_vec",
+          "laneId": "c0-v",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "residual_add",
+          "kind": "compute",
+          "start": 168,
+          "duration": 12,
+          "args": {
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 46,
+            "pc": "0x1068"
+          }
+        },
+        {
+          "id": "c0-c_store",
+          "laneId": "c0-v3",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "store output C",
+          "kind": "transfer",
+          "start": 180,
+          "duration": 10,
+          "args": {
+            "source": "UB",
+            "destination": "GM"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 47,
+            "pc": "0x106c"
+          }
+        },
+        {
+          "id": "c1-a_alloc",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "bmu.alloc · main",
+          "kind": "allocation",
+          "start": 7,
+          "duration": 2,
+          "args": {
+            "buffer": "L1 / UB",
+            "segment": "MAIN",
+            "note": "Synthetic allocation duration; not a hardware timing claim"
+          }
+        },
+        {
+          "id": "c1-a_args",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 9,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 49,
+            "pc": "0x1074"
+          }
+        },
+        {
+          "id": "c1-a_bias",
+          "laneId": "c1-v2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load bias",
+          "kind": "transfer",
+          "start": 13,
+          "duration": 12,
+          "args": {
+            "bytes": 4096,
+            "source": "GM",
+            "destination": "UB",
+            "segment": "ENTRY"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 50,
+            "pc": "0x1078"
+          }
+        },
+        {
+          "id": "c1-a_load_a",
+          "laneId": "c1-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load A",
+          "kind": "transfer",
+          "start": 13,
+          "duration": 18,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 51,
+            "pc": "0x107c"
+          }
+        },
+        {
+          "id": "c1-a_load_b",
+          "laneId": "c1-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load B",
+          "kind": "transfer",
+          "start": 31,
+          "duration": 14,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 52,
+            "pc": "0x1080"
+          }
+        },
+        {
+          "id": "c1-a_l0",
+          "laneId": "c1-c1",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 45,
+          "duration": 7,
+          "args": {
+            "source": "L1",
+            "destination": "L0A / L0B"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 53,
+            "pc": "0x1084"
+          }
+        },
+        {
+          "id": "c1-a_cube",
+          "laneId": "c1-c",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "matmul 128³",
+          "kind": "compute",
+          "start": 52,
+          "duration": 20,
+          "args": {
+            "shape": [
+              128,
+              128,
+              128
+            ],
+            "accumulation": "fp32"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 54,
+            "pc": "0x1088"
+          }
+        },
+        {
+          "id": "c1-a_fixp",
+          "laneId": "c1-f",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 72,
+          "duration": 8,
+          "args": {
+            "source": "L0C",
+            "destination": "UB",
+            "tightlyCoupledBuffer": "tcb-0"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 20,
+            "pc": "0x108c"
+          }
+        },
+        {
+          "id": "c1-a_flag",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "SET_FLAG · FIX → V",
+          "kind": "marker",
+          "start": 80,
+          "duration": 0,
+          "args": {
+            "flagId": 3
+          }
+        },
+        {
+          "id": "c1-a_relu",
+          "laneId": "c1-v",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "bias + ReLU",
+          "kind": "compute",
+          "start": 80,
+          "duration": 8,
+          "args": {
+            "dtype": "fp16",
+            "buffer": "TAIL / UB"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 22,
+            "pc": "0x1094"
+          }
+        },
+        {
+          "id": "c1-a_store",
+          "laneId": "c1-v3",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "store output A",
+          "kind": "transfer",
+          "start": 88,
+          "duration": 30,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "bytes": 32768,
+            "segment": "TAIL",
+            "note": "The output remains in the tail segment until the transfer retires"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 23,
+            "pc": "0x1098"
+          }
+        },
+        {
+          "id": "c1-a_next",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 82,
+          "duration": 0,
+          "args": {
+            "scope": "next task"
+          }
+        },
+        {
+          "id": "c1-a_fake",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 88,
+          "duration": 0,
+          "args": {
+            "note": "Release scalar execution after the tail store is issued"
+          }
+        },
+        {
+          "id": "c1-b_args",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 90,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 26,
+            "pc": "0x10a4"
+          }
+        },
+        {
+          "id": "c1-b_alloc",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "bmu.alloc · entry",
+          "kind": "allocation",
+          "start": 93,
+          "duration": 2,
+          "args": {
+            "buffer": "UB",
+            "segment": "ENTRY",
+            "note": "Entry and previous tail use separate memory segments"
+          }
+        },
+        {
+          "id": "c1-b_w",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load weight B",
+          "kind": "transfer",
+          "start": 95,
+          "duration": 20,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "ready",
+            "bytes": 8192,
+            "note": "Independent of the previous task; can overlap its output store"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 28,
+            "pc": "0x10ac"
+          }
+        },
+        {
+          "id": "c1-b_wait",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 115,
+          "duration": 3,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S",
+            "note": "The demo waits before reading the previous task output"
+          }
+        },
+        {
+          "id": "c1-b_x",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load input A → B",
+          "kind": "transfer",
+          "start": 118,
+          "duration": 12,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "producer_kernel(matmul)",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 30,
+            "pc": "0x10b4"
+          }
+        },
+        {
+          "id": "c1-b_vec",
+          "laneId": "c1-v",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "rms_norm",
+          "kind": "compute",
+          "start": 131,
+          "duration": 18,
+          "args": {
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 31,
+            "pc": "0x10b8"
+          }
+        },
+        {
+          "id": "c1-b_store",
+          "laneId": "c1-v3",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "store output B",
+          "kind": "transfer",
+          "start": 149,
+          "duration": 17,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "segment": "TAIL"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 32,
+            "pc": "0x10bc"
+          }
+        },
+        {
+          "id": "c1-b_next",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 145,
+          "duration": 0,
+          "args": {}
+        },
+        {
+          "id": "c1-b_fake",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 149,
+          "duration": 0,
+          "args": {}
+        },
+        {
+          "id": "c1-c_args",
+          "laneId": "c1-s",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 151,
+          "duration": 3,
+          "args": {},
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 35,
+            "pc": "0x10c8"
+          }
+        },
+        {
+          "id": "c1-c_w",
+          "laneId": "c1-v2",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load residual",
+          "kind": "transfer",
+          "start": 154,
+          "duration": 8,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 36,
+            "pc": "0x10cc"
+          }
+        },
+        {
+          "id": "c1-c_wait",
+          "laneId": "c1-s",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 162,
+          "duration": 4,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S"
+          }
+        },
+        {
+          "id": "c1-c_x",
+          "laneId": "c1-v2",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load input B → C",
+          "kind": "transfer",
+          "start": 166,
+          "duration": 8,
+          "args": {
+            "dependency": "producer_kernel(norm)",
+            "source": "GM",
+            "destination": "UB"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 38,
+            "pc": "0x10d4"
+          }
+        },
+        {
+          "id": "c1-c_vec",
+          "laneId": "c1-v",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "residual_add",
+          "kind": "compute",
+          "start": 175,
+          "duration": 12,
+          "args": {
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 39,
+            "pc": "0x10d8"
+          }
+        },
+        {
+          "id": "c1-c_store",
+          "laneId": "c1-v3",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "store output C",
+          "kind": "transfer",
+          "start": 187,
+          "duration": 10,
+          "args": {
+            "source": "UB",
+            "destination": "GM"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 40,
+            "pc": "0x10dc"
+          }
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "c0-a_load_a--a_l0",
+          "from": "c0-a_load_a",
+          "to": "c0-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_load_b--a_l0",
+          "from": "c0-a_load_b",
+          "to": "c0-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_l0--a_cube",
+          "from": "c0-a_l0",
+          "to": "c0-a_cube",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_cube--a_fixp",
+          "from": "c0-a_cube",
+          "to": "c0-a_fixp",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_fixp--a_relu",
+          "from": "c0-a_fixp",
+          "to": "c0-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_bias--a_relu",
+          "from": "c0-a_bias",
+          "to": "c0-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_relu--a_store",
+          "from": "c0-a_relu",
+          "to": "c0-a_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-b_w--b_vec",
+          "from": "c0-b_w",
+          "to": "c0-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-b_x--b_vec",
+          "from": "c0-b_x",
+          "to": "c0-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-b_vec--b_store",
+          "from": "c0-b_vec",
+          "to": "c0-b_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-c_w--c_vec",
+          "from": "c0-c_w",
+          "to": "c0-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-c_x--c_vec",
+          "from": "c0-c_x",
+          "to": "c0-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-c_vec--c_store",
+          "from": "c0-c_vec",
+          "to": "c0-c_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_store--b_wait",
+          "from": "c0-a_store",
+          "to": "c0-b_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c0-b_wait--b_x",
+          "from": "c0-b_wait",
+          "to": "c0-b_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        },
+        {
+          "id": "c0-b_store--c_wait",
+          "from": "c0-b_store",
+          "to": "c0-c_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c0-c_wait--c_x",
+          "from": "c0-c_wait",
+          "to": "c0-c_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        },
+        {
+          "id": "c0-a_fake--b_args",
+          "from": "c0-a_fake",
+          "to": "c0-b_args",
+          "type": "schedule",
+          "label": "next task starts"
+        },
+        {
+          "id": "c0-b_fake--c_args",
+          "from": "c0-b_fake",
+          "to": "c0-c_args",
+          "type": "schedule",
+          "label": "next task starts"
+        },
+        {
+          "id": "c1-a_load_a--a_l0",
+          "from": "c1-a_load_a",
+          "to": "c1-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_load_b--a_l0",
+          "from": "c1-a_load_b",
+          "to": "c1-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_l0--a_cube",
+          "from": "c1-a_l0",
+          "to": "c1-a_cube",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_cube--a_fixp",
+          "from": "c1-a_cube",
+          "to": "c1-a_fixp",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_fixp--a_relu",
+          "from": "c1-a_fixp",
+          "to": "c1-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_bias--a_relu",
+          "from": "c1-a_bias",
+          "to": "c1-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_relu--a_store",
+          "from": "c1-a_relu",
+          "to": "c1-a_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-b_w--b_vec",
+          "from": "c1-b_w",
+          "to": "c1-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-b_x--b_vec",
+          "from": "c1-b_x",
+          "to": "c1-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-b_vec--b_store",
+          "from": "c1-b_vec",
+          "to": "c1-b_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-c_w--c_vec",
+          "from": "c1-c_w",
+          "to": "c1-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-c_x--c_vec",
+          "from": "c1-c_x",
+          "to": "c1-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-c_vec--c_store",
+          "from": "c1-c_vec",
+          "to": "c1-c_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_store--b_wait",
+          "from": "c1-a_store",
+          "to": "c1-b_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c1-b_wait--b_x",
+          "from": "c1-b_wait",
+          "to": "c1-b_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        },
+        {
+          "id": "c1-b_store--c_wait",
+          "from": "c1-b_store",
+          "to": "c1-c_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c1-c_wait--c_x",
+          "from": "c1-c_wait",
+          "to": "c1-c_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        },
+        {
+          "id": "c1-a_fake--b_args",
+          "from": "c1-a_fake",
+          "to": "c1-b_args",
+          "type": "schedule",
+          "label": "next task starts"
+        },
+        {
+          "id": "c1-b_fake--c_args",
+          "from": "c1-b_fake",
+          "to": "c1-c_args",
+          "type": "schedule",
+          "label": "next task starts"
+        }
+      ],
+      "regions": [
+        {
+          "id": "c0-overlap-ab",
+          "coreId": "core-0",
+          "label": "A output ∥ B weight",
+          "type": "overlap",
+          "start": 88,
+          "end": 108
+        },
+        {
+          "id": "c0-overlap-bc",
+          "coreId": "core-0",
+          "label": "B output ∥ C residual",
+          "type": "overlap",
+          "start": 147,
+          "end": 155
+        },
+        {
+          "id": "c1-overlap-ab",
+          "coreId": "core-1",
+          "label": "A output ∥ B weight",
+          "type": "overlap",
+          "start": 95,
+          "end": 115
+        },
+        {
+          "id": "c1-overlap-bc",
+          "coreId": "core-1",
+          "label": "B output ∥ C residual",
+          "type": "overlap",
+          "start": 154,
+          "end": 162
+        }
+      ]
+    },
+    {
+      "id": "baseline",
+      "label": "Baseline",
+      "description": "Each task completes its output transfer before the next task begins.",
+      "events": [
+        {
+          "id": "c0-a_alloc",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "bmu.alloc · main",
+          "kind": "allocation",
+          "start": 0,
+          "duration": 2,
+          "args": {
+            "buffer": "L1 / UB",
+            "segment": "MAIN",
+            "note": "Synthetic allocation duration; not a hardware timing claim"
+          }
+        },
+        {
+          "id": "c0-a_args",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 2,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 21,
+            "pc": "0x1004"
+          }
+        },
+        {
+          "id": "c0-a_bias",
+          "laneId": "c0-v2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load bias",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 12,
+          "args": {
+            "bytes": 4096,
+            "source": "GM",
+            "destination": "UB",
+            "segment": "ENTRY"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 22,
+            "pc": "0x1008"
+          }
+        },
+        {
+          "id": "c0-a_load_a",
+          "laneId": "c0-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load A",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 18,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 23,
+            "pc": "0x100c"
+          }
+        },
+        {
+          "id": "c0-a_load_b",
+          "laneId": "c0-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load B",
+          "kind": "transfer",
+          "start": 24,
+          "duration": 14,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 24,
+            "pc": "0x1010"
+          }
+        },
+        {
+          "id": "c0-a_l0",
+          "laneId": "c0-c1",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 38,
+          "duration": 7,
+          "args": {
+            "source": "L1",
+            "destination": "L0A / L0B"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 25,
+            "pc": "0x1014"
+          }
+        },
+        {
+          "id": "c0-a_cube",
+          "laneId": "c0-c",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "matmul 128³",
+          "kind": "compute",
+          "start": 45,
+          "duration": 20,
+          "args": {
+            "shape": [
+              128,
+              128,
+              128
+            ],
+            "accumulation": "fp32"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 26,
+            "pc": "0x1018"
+          }
+        },
+        {
+          "id": "c0-a_fixp",
+          "laneId": "c0-f",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 65,
+          "duration": 8,
+          "args": {
+            "source": "L0C",
+            "destination": "UB",
+            "tightlyCoupledBuffer": "tcb-0"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 27,
+            "pc": "0x101c"
+          }
+        },
+        {
+          "id": "c0-a_flag",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "SET_FLAG · FIX → V",
+          "kind": "marker",
+          "start": 73,
+          "duration": 0,
+          "args": {
+            "flagId": 3
+          }
+        },
+        {
+          "id": "c0-a_relu",
+          "laneId": "c0-v",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "bias + ReLU",
+          "kind": "compute",
+          "start": 73,
+          "duration": 8,
+          "args": {
+            "dtype": "fp16",
+            "buffer": "TAIL / UB"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 29,
+            "pc": "0x1024"
+          }
+        },
+        {
+          "id": "c0-a_store",
+          "laneId": "c0-v3",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "store output A",
+          "kind": "transfer",
+          "start": 81,
+          "duration": 30,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "bytes": 32768,
+            "segment": "TAIL",
+            "note": "The output remains in the tail segment until the transfer retires"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 30,
+            "pc": "0x1028"
+          }
+        },
+        {
+          "id": "c0-a_barrier",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 81,
+          "duration": 30,
+          "args": {
+            "reason": "Wait for task A completion before task B begins"
+          }
+        },
+        {
+          "id": "c0-b_args",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 111,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 32,
+            "pc": "0x1030"
+          }
+        },
+        {
+          "id": "c0-b_alloc",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "bmu.alloc · entry",
+          "kind": "allocation",
+          "start": 114,
+          "duration": 2,
+          "args": {
+            "buffer": "UB",
+            "segment": "ENTRY",
+            "note": "Entry and previous tail use separate memory segments"
+          }
+        },
+        {
+          "id": "c0-b_w",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load weight B",
+          "kind": "transfer",
+          "start": 116,
+          "duration": 20,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "ready",
+            "bytes": 8192,
+            "note": "Independent of the previous task; can overlap its output store"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 34,
+            "pc": "0x1038"
+          }
+        },
+        {
+          "id": "c0-b_wait",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 136,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S",
+            "note": "The demo waits before reading the previous task output"
+          }
+        },
+        {
+          "id": "c0-b_x",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load input A → B",
+          "kind": "transfer",
+          "start": 136,
+          "duration": 12,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "producer_kernel(matmul)",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 36,
+            "pc": "0x1040"
+          }
+        },
+        {
+          "id": "c0-b_vec",
+          "laneId": "c0-v",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "rms_norm",
+          "kind": "compute",
+          "start": 149,
+          "duration": 18,
+          "args": {
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 37,
+            "pc": "0x1044"
+          }
+        },
+        {
+          "id": "c0-b_store",
+          "laneId": "c0-v3",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "store output B",
+          "kind": "transfer",
+          "start": 167,
+          "duration": 17,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "segment": "TAIL"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 38,
+            "pc": "0x1048"
+          }
+        },
+        {
+          "id": "c0-b_barrier",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 167,
+          "duration": 17,
+          "args": {}
+        },
+        {
+          "id": "c0-c_args",
+          "laneId": "c0-s",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 184,
+          "duration": 3,
+          "args": {},
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 40,
+            "pc": "0x1050"
+          }
+        },
+        {
+          "id": "c0-c_w",
+          "laneId": "c0-v2",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load residual",
+          "kind": "transfer",
+          "start": 187,
+          "duration": 8,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 41,
+            "pc": "0x1054"
+          }
+        },
+        {
+          "id": "c0-c_wait",
+          "laneId": "c0-s",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 195,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S"
+          }
+        },
+        {
+          "id": "c0-c_x",
+          "laneId": "c0-v2",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "load input B → C",
+          "kind": "transfer",
+          "start": 195,
+          "duration": 8,
+          "args": {
+            "dependency": "producer_kernel(norm)",
+            "source": "GM",
+            "destination": "UB"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 43,
+            "pc": "0x105c"
+          }
+        },
+        {
+          "id": "c0-c_vec",
+          "laneId": "c0-v",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "residual_add",
+          "kind": "compute",
+          "start": 204,
+          "duration": 12,
+          "args": {
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 44,
+            "pc": "0x1060"
+          }
+        },
+        {
+          "id": "c0-c_store",
+          "laneId": "c0-v3",
+          "kernelId": "add",
+          "taskId": "add:block-0",
+          "blockId": "0",
+          "iteration": 0,
+          "name": "store output C",
+          "kind": "transfer",
+          "start": 216,
+          "duration": 10,
+          "args": {
+            "source": "UB",
+            "destination": "GM"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 45,
+            "pc": "0x1064"
+          }
+        },
+        {
+          "id": "c1-a_alloc",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "bmu.alloc · main",
+          "kind": "allocation",
+          "start": 7,
+          "duration": 2,
+          "args": {
+            "buffer": "L1 / UB",
+            "segment": "MAIN",
+            "note": "Synthetic allocation duration; not a hardware timing claim"
+          }
+        },
+        {
+          "id": "c1-a_args",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 9,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 47,
+            "pc": "0x106c"
+          }
+        },
+        {
+          "id": "c1-a_bias",
+          "laneId": "c1-v2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load bias",
+          "kind": "transfer",
+          "start": 13,
+          "duration": 12,
+          "args": {
+            "bytes": 4096,
+            "source": "GM",
+            "destination": "UB",
+            "segment": "ENTRY"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 48,
+            "pc": "0x1070"
+          }
+        },
+        {
+          "id": "c1-a_load_a",
+          "laneId": "c1-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load A",
+          "kind": "transfer",
+          "start": 13,
+          "duration": 18,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 49,
+            "pc": "0x1074"
+          }
+        },
+        {
+          "id": "c1-a_load_b",
+          "laneId": "c1-c2",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load B",
+          "kind": "transfer",
+          "start": 31,
+          "duration": 14,
+          "args": {
+            "bytes": 32768,
+            "source": "GM",
+            "destination": "L1",
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 50,
+            "pc": "0x1078"
+          }
+        },
+        {
+          "id": "c1-a_l0",
+          "laneId": "c1-c1",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 45,
+          "duration": 7,
+          "args": {
+            "source": "L1",
+            "destination": "L0A / L0B"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 51,
+            "pc": "0x107c"
+          }
+        },
+        {
+          "id": "c1-a_cube",
+          "laneId": "c1-c",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "matmul 128³",
+          "kind": "compute",
+          "start": 52,
+          "duration": 20,
+          "args": {
+            "shape": [
+              128,
+              128,
+              128
+            ],
+            "accumulation": "fp32"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 52,
+            "pc": "0x1080"
+          }
+        },
+        {
+          "id": "c1-a_fixp",
+          "laneId": "c1-f",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 72,
+          "duration": 8,
+          "args": {
+            "source": "L0C",
+            "destination": "UB",
+            "tightlyCoupledBuffer": "tcb-0"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 53,
+            "pc": "0x1084"
+          }
+        },
+        {
+          "id": "c1-a_flag",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "SET_FLAG · FIX → V",
+          "kind": "marker",
+          "start": 80,
+          "duration": 0,
+          "args": {
+            "flagId": 3
+          }
+        },
+        {
+          "id": "c1-a_relu",
+          "laneId": "c1-v",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "bias + ReLU",
+          "kind": "compute",
+          "start": 80,
+          "duration": 8,
+          "args": {
+            "dtype": "fp16",
+            "buffer": "TAIL / UB"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 20,
+            "pc": "0x108c"
+          }
+        },
+        {
+          "id": "c1-a_store",
+          "laneId": "c1-v3",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "store output A",
+          "kind": "transfer",
+          "start": 88,
+          "duration": 30,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "bytes": 32768,
+            "segment": "TAIL",
+            "note": "The output remains in the tail segment until the transfer retires"
+          },
+          "source": {
+            "file": "demo/matmul.mlir",
+            "line": 21,
+            "pc": "0x1090"
+          }
+        },
+        {
+          "id": "c1-a_barrier",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "matmul:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 88,
+          "duration": 30,
+          "args": {
+            "reason": "Wait for task A completion before task B begins"
+          }
+        },
+        {
+          "id": "c1-b_args",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 118,
+          "duration": 3,
+          "args": {
+            "addressSpace": "GM → scalar"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 23,
+            "pc": "0x1098"
+          }
+        },
+        {
+          "id": "c1-b_alloc",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "bmu.alloc · entry",
+          "kind": "allocation",
+          "start": 121,
+          "duration": 2,
+          "args": {
+            "buffer": "UB",
+            "segment": "ENTRY",
+            "note": "Entry and previous tail use separate memory segments"
+          }
+        },
+        {
+          "id": "c1-b_w",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load weight B",
+          "kind": "transfer",
+          "start": 123,
+          "duration": 20,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "ready",
+            "bytes": 8192,
+            "note": "Independent of the previous task; can overlap its output store"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 25,
+            "pc": "0x10a0"
+          }
+        },
+        {
+          "id": "c1-b_wait",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 143,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S",
+            "note": "The demo waits before reading the previous task output"
+          }
+        },
+        {
+          "id": "c1-b_x",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load input A → B",
+          "kind": "transfer",
+          "start": 143,
+          "duration": 12,
+          "args": {
+            "source": "GM",
+            "destination": "UB",
+            "dependency": "producer_kernel(matmul)",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 27,
+            "pc": "0x10a8"
+          }
+        },
+        {
+          "id": "c1-b_vec",
+          "laneId": "c1-v",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "rms_norm",
+          "kind": "compute",
+          "start": 156,
+          "duration": 18,
+          "args": {
+            "shape": [
+              128,
+              128
+            ],
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 28,
+            "pc": "0x10ac"
+          }
+        },
+        {
+          "id": "c1-b_store",
+          "laneId": "c1-v3",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "store output B",
+          "kind": "transfer",
+          "start": 174,
+          "duration": 17,
+          "args": {
+            "source": "UB",
+            "destination": "GM",
+            "segment": "TAIL"
+          },
+          "source": {
+            "file": "demo/norm.mlir",
+            "line": 29,
+            "pc": "0x10b0"
+          }
+        },
+        {
+          "id": "c1-b_barrier",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "norm:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 174,
+          "duration": 17,
+          "args": {}
+        },
+        {
+          "id": "c1-c_args",
+          "laneId": "c1-s",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 191,
+          "duration": 3,
+          "args": {},
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 31,
+            "pc": "0x10b8"
+          }
+        },
+        {
+          "id": "c1-c_w",
+          "laneId": "c1-v2",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load residual",
+          "kind": "transfer",
+          "start": 194,
+          "duration": 8,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB",
+            "bytes": 32768
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 32,
+            "pc": "0x10bc"
+          }
+        },
+        {
+          "id": "c1-c_wait",
+          "laneId": "c1-s",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 202,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers",
+            "pipe": "S"
+          }
+        },
+        {
+          "id": "c1-c_x",
+          "laneId": "c1-v2",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "load input B → C",
+          "kind": "transfer",
+          "start": 202,
+          "duration": 8,
+          "args": {
+            "dependency": "producer_kernel(norm)",
+            "source": "GM",
+            "destination": "UB"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 34,
+            "pc": "0x10c4"
+          }
+        },
+        {
+          "id": "c1-c_vec",
+          "laneId": "c1-v",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "residual_add",
+          "kind": "compute",
+          "start": 211,
+          "duration": 12,
+          "args": {
+            "dtype": "fp16"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 35,
+            "pc": "0x10c8"
+          }
+        },
+        {
+          "id": "c1-c_store",
+          "laneId": "c1-v3",
+          "kernelId": "add",
+          "taskId": "add:block-1",
+          "blockId": "1",
+          "iteration": 0,
+          "name": "store output C",
+          "kind": "transfer",
+          "start": 223,
+          "duration": 10,
+          "args": {
+            "source": "UB",
+            "destination": "GM"
+          },
+          "source": {
+            "file": "demo/add.mlir",
+            "line": 36,
+            "pc": "0x10cc"
+          }
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "c0-a_load_a--a_l0",
+          "from": "c0-a_load_a",
+          "to": "c0-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_load_b--a_l0",
+          "from": "c0-a_load_b",
+          "to": "c0-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_l0--a_cube",
+          "from": "c0-a_l0",
+          "to": "c0-a_cube",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_cube--a_fixp",
+          "from": "c0-a_cube",
+          "to": "c0-a_fixp",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_fixp--a_relu",
+          "from": "c0-a_fixp",
+          "to": "c0-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_bias--a_relu",
+          "from": "c0-a_bias",
+          "to": "c0-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_relu--a_store",
+          "from": "c0-a_relu",
+          "to": "c0-a_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-b_w--b_vec",
+          "from": "c0-b_w",
+          "to": "c0-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-b_x--b_vec",
+          "from": "c0-b_x",
+          "to": "c0-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-b_vec--b_store",
+          "from": "c0-b_vec",
+          "to": "c0-b_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-c_w--c_vec",
+          "from": "c0-c_w",
+          "to": "c0-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-c_x--c_vec",
+          "from": "c0-c_x",
+          "to": "c0-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-c_vec--c_store",
+          "from": "c0-c_vec",
+          "to": "c0-c_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c0-a_store--b_wait",
+          "from": "c0-a_store",
+          "to": "c0-b_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c0-b_wait--b_x",
+          "from": "c0-b_wait",
+          "to": "c0-b_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        },
+        {
+          "id": "c0-b_store--c_wait",
+          "from": "c0-b_store",
+          "to": "c0-c_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c0-c_wait--c_x",
+          "from": "c0-c_wait",
+          "to": "c0-c_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        },
+        {
+          "id": "c1-a_load_a--a_l0",
+          "from": "c1-a_load_a",
+          "to": "c1-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_load_b--a_l0",
+          "from": "c1-a_load_b",
+          "to": "c1-a_l0",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_l0--a_cube",
+          "from": "c1-a_l0",
+          "to": "c1-a_cube",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_cube--a_fixp",
+          "from": "c1-a_cube",
+          "to": "c1-a_fixp",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_fixp--a_relu",
+          "from": "c1-a_fixp",
+          "to": "c1-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_bias--a_relu",
+          "from": "c1-a_bias",
+          "to": "c1-a_relu",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_relu--a_store",
+          "from": "c1-a_relu",
+          "to": "c1-a_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-b_w--b_vec",
+          "from": "c1-b_w",
+          "to": "c1-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-b_x--b_vec",
+          "from": "c1-b_x",
+          "to": "c1-b_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-b_vec--b_store",
+          "from": "c1-b_vec",
+          "to": "c1-b_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-c_w--c_vec",
+          "from": "c1-c_w",
+          "to": "c1-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-c_x--c_vec",
+          "from": "c1-c_x",
+          "to": "c1-c_vec",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-c_vec--c_store",
+          "from": "c1-c_vec",
+          "to": "c1-c_store",
+          "type": "data",
+          "label": ""
+        },
+        {
+          "id": "c1-a_store--b_wait",
+          "from": "c1-a_store",
+          "to": "c1-b_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c1-b_wait--b_x",
+          "from": "c1-b_wait",
+          "to": "c1-b_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        },
+        {
+          "id": "c1-b_store--c_wait",
+          "from": "c1-b_store",
+          "to": "c1-c_wait",
+          "type": "sync",
+          "label": "previous producers complete",
+          "toAnchor": "end"
+        },
+        {
+          "id": "c1-c_wait--c_x",
+          "from": "c1-c_wait",
+          "to": "c1-c_x",
+          "type": "sync",
+          "label": "wait before dependent read"
+        }
+      ],
+      "regions": []
+    }
+  ]
+}

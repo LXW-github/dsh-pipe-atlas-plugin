@@ -1,0 +1,1667 @@
+{
+  "schemaVersion": "1.2",
+  "metadata": {
+    "title": "调度 → 取指 → 执行 · Multi-stage scheduling",
+    "timeUnit": "us",
+    "device": "NPU 0 · Shared scheduler · 2 physical cores",
+    "source": {
+      "kind": "synthetic"
+    },
+    "description": "Synthetic timing. Shared scheduling has one or several separated stages before instruction fetch, and can overlap predecessor tail execution. Kernel names are intentionally omitted."
+  },
+  "devices": [
+    {
+      "id": "npu0",
+      "label": "NPU 0"
+    }
+  ],
+  "cores": [
+    {
+      "id": "core-0",
+      "label": "Core 0",
+      "deviceId": "npu0",
+      "cubeId": "cube-0",
+      "vectorId": "vector-0"
+    },
+    {
+      "id": "core-1",
+      "label": "Core 1",
+      "deviceId": "npu0",
+      "cubeId": "cube-1",
+      "vectorId": "vector-1"
+    }
+  ],
+  "lanes": [
+    {
+      "id": "stars",
+      "label": "STARS / SQE",
+      "deviceId": "npu0",
+      "engine": "SCHEDULER",
+      "pipe": "STARS",
+      "role": "schedule"
+    },
+    {
+      "id": "hwts",
+      "label": "HWTS / SC",
+      "deviceId": "npu0",
+      "engine": "SCHEDULER",
+      "pipe": "HWTS",
+      "role": "schedule"
+    },
+    {
+      "id": "c0-fetch",
+      "label": "IFETCH",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "IFETCH",
+      "role": "fetch"
+    },
+    {
+      "id": "c0-s",
+      "label": "SCALAR",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "SCALAR"
+    },
+    {
+      "id": "c0-load",
+      "label": "MTE2",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c0-v",
+      "label": "VECTOR",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "VECTOR"
+    },
+    {
+      "id": "c0-store",
+      "label": "MTE3",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE3"
+    },
+    {
+      "id": "c1-fetch",
+      "label": "IFETCH",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "IFETCH",
+      "role": "fetch"
+    },
+    {
+      "id": "c1-s",
+      "label": "SCALAR",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "SCALAR"
+    },
+    {
+      "id": "c1-load",
+      "label": "MTE2",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c1-v",
+      "label": "VECTOR",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "VECTOR"
+    },
+    {
+      "id": "c1-store",
+      "label": "MTE3",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "MTE3"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task0",
+      "color": "#1b9c85",
+      "dependsOn": []
+    },
+    {
+      "id": "task1",
+      "color": "#6d71d5",
+      "dependsOn": [
+        "task0"
+      ]
+    },
+    {
+      "id": "task2",
+      "color": "#438ac7",
+      "dependsOn": [
+        "task1"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "early-start",
+      "label": "Early Start",
+      "events": [
+        {
+          "id": "t0-sqe",
+          "taskId": "task0",
+          "laneId": "stars",
+          "name": "SQE read / decode",
+          "kind": "schedule",
+          "start": 0,
+          "duration": 3,
+          "fetchIds": [
+            "t0-c0-fetch",
+            "t0-c1-fetch"
+          ],
+          "args": {
+            "stage": "sqe",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t0-dispatch",
+          "taskId": "task0",
+          "laneId": "hwts",
+          "name": "Dispatch request",
+          "kind": "schedule",
+          "start": 5,
+          "duration": 4,
+          "fetchIds": [
+            "t0-c0-fetch",
+            "t0-c1-fetch"
+          ],
+          "args": {
+            "stage": "dispatch",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t0-c0-fetch",
+          "taskId": "task0",
+          "laneId": "c0-fetch",
+          "kind": "fetch",
+          "start": 10,
+          "duration": 3,
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-args",
+          "taskId": "task0",
+          "laneId": "c0-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 13,
+          "duration": 2,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-weight",
+          "taskId": "task0",
+          "laneId": "c0-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 15,
+          "duration": 8,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-wait",
+          "taskId": "task0",
+          "laneId": "c0-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 15,
+          "duration": 0,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-input",
+          "taskId": "task0",
+          "laneId": "c0-load",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 23,
+          "duration": 10,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-compute",
+          "taskId": "task0",
+          "laneId": "c0-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 33,
+          "duration": 15,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-store",
+          "taskId": "task0",
+          "laneId": "c0-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 48,
+          "duration": 30,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c1-fetch",
+          "taskId": "task0",
+          "laneId": "c1-fetch",
+          "kind": "fetch",
+          "start": 12,
+          "duration": 3,
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-args",
+          "taskId": "task0",
+          "laneId": "c1-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 15,
+          "duration": 2,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-weight",
+          "taskId": "task0",
+          "laneId": "c1-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 17,
+          "duration": 8,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-wait",
+          "taskId": "task0",
+          "laneId": "c1-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 17,
+          "duration": 0,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-input",
+          "taskId": "task0",
+          "laneId": "c1-load",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 25,
+          "duration": 10,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-compute",
+          "taskId": "task0",
+          "laneId": "c1-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 35,
+          "duration": 15,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-store",
+          "taskId": "task0",
+          "laneId": "c1-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 50,
+          "duration": 30,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-sqe",
+          "taskId": "task1",
+          "laneId": "stars",
+          "name": "SQE read / decode",
+          "kind": "schedule",
+          "start": 54,
+          "duration": 4,
+          "fetchIds": [
+            "t1-c0-fetch",
+            "t1-c1-fetch"
+          ],
+          "args": {
+            "stage": "sqe",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t1-hwts",
+          "taskId": "task1",
+          "laneId": "hwts",
+          "name": "HWTS processing",
+          "kind": "schedule",
+          "start": 61,
+          "duration": 6,
+          "fetchIds": [
+            "t1-c0-fetch",
+            "t1-c1-fetch"
+          ],
+          "args": {
+            "stage": "hwts",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t1-sc",
+          "taskId": "task1",
+          "laneId": "hwts",
+          "name": "SC accepts task",
+          "kind": "schedule",
+          "start": 70,
+          "duration": 3,
+          "fetchIds": [
+            "t1-c0-fetch",
+            "t1-c1-fetch"
+          ],
+          "args": {
+            "stage": "sc",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t1-c0-fetch",
+          "taskId": "task1",
+          "laneId": "c0-fetch",
+          "kind": "fetch",
+          "start": 74,
+          "duration": 3,
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-args",
+          "taskId": "task1",
+          "laneId": "c0-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 77,
+          "duration": 2,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-weight",
+          "taskId": "task1",
+          "laneId": "c0-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 79,
+          "duration": 8,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-wait",
+          "taskId": "task1",
+          "laneId": "c0-s",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 79,
+          "duration": 1,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-input",
+          "taskId": "task1",
+          "laneId": "c0-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 87,
+          "duration": 10,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-compute",
+          "taskId": "task1",
+          "laneId": "c0-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 97,
+          "duration": 15,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-store",
+          "taskId": "task1",
+          "laneId": "c0-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 112,
+          "duration": 30,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c1-fetch",
+          "taskId": "task1",
+          "laneId": "c1-fetch",
+          "kind": "fetch",
+          "start": 76,
+          "duration": 3,
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-args",
+          "taskId": "task1",
+          "laneId": "c1-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 79,
+          "duration": 2,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-weight",
+          "taskId": "task1",
+          "laneId": "c1-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 81,
+          "duration": 8,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-wait",
+          "taskId": "task1",
+          "laneId": "c1-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 81,
+          "duration": 0,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-input",
+          "taskId": "task1",
+          "laneId": "c1-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 89,
+          "duration": 10,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-compute",
+          "taskId": "task1",
+          "laneId": "c1-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 99,
+          "duration": 15,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-store",
+          "taskId": "task1",
+          "laneId": "c1-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 114,
+          "duration": 30,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-dispatch",
+          "taskId": "task2",
+          "laneId": "hwts",
+          "name": "Single scheduling stage",
+          "kind": "schedule",
+          "start": 126,
+          "duration": 6,
+          "fetchIds": [
+            "t2-c0-fetch",
+            "t2-c1-fetch"
+          ],
+          "args": {
+            "stage": "dispatch",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t2-c0-fetch",
+          "taskId": "task2",
+          "laneId": "c0-fetch",
+          "kind": "fetch",
+          "start": 134,
+          "duration": 3,
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-args",
+          "taskId": "task2",
+          "laneId": "c0-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 137,
+          "duration": 2,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-weight",
+          "taskId": "task2",
+          "laneId": "c0-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 139,
+          "duration": 8,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-wait",
+          "taskId": "task2",
+          "laneId": "c0-s",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 139,
+          "duration": 5,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-input",
+          "taskId": "task2",
+          "laneId": "c0-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 147,
+          "duration": 10,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-compute",
+          "taskId": "task2",
+          "laneId": "c0-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 157,
+          "duration": 15,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-store",
+          "taskId": "task2",
+          "laneId": "c0-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 172,
+          "duration": 30,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c1-fetch",
+          "taskId": "task2",
+          "laneId": "c1-fetch",
+          "kind": "fetch",
+          "start": 136,
+          "duration": 3,
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-args",
+          "taskId": "task2",
+          "laneId": "c1-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 139,
+          "duration": 2,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-weight",
+          "taskId": "task2",
+          "laneId": "c1-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 141,
+          "duration": 8,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-wait",
+          "taskId": "task2",
+          "laneId": "c1-s",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 141,
+          "duration": 3,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-input",
+          "taskId": "task2",
+          "laneId": "c1-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 149,
+          "duration": 10,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-compute",
+          "taskId": "task2",
+          "laneId": "c1-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 159,
+          "duration": 15,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-store",
+          "taskId": "task2",
+          "laneId": "c1-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 174,
+          "duration": 30,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "t0-c0-weight--t0-c0-compute",
+          "from": "t0-c0-weight",
+          "to": "t0-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-wait--t0-c0-input",
+          "from": "t0-c0-wait",
+          "to": "t0-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-input--t0-c0-compute",
+          "from": "t0-c0-input",
+          "to": "t0-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-compute--t0-c0-store",
+          "from": "t0-c0-compute",
+          "to": "t0-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-weight--t0-c1-compute",
+          "from": "t0-c1-weight",
+          "to": "t0-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-wait--t0-c1-input",
+          "from": "t0-c1-wait",
+          "to": "t0-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c1-input--t0-c1-compute",
+          "from": "t0-c1-input",
+          "to": "t0-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-compute--t0-c1-store",
+          "from": "t0-c1-compute",
+          "to": "t0-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-weight--t1-c0-compute",
+          "from": "t1-c0-weight",
+          "to": "t1-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-wait--t1-c0-input",
+          "from": "t1-c0-wait",
+          "to": "t1-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-input--t1-c0-compute",
+          "from": "t1-c0-input",
+          "to": "t1-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-compute--t1-c0-store",
+          "from": "t1-c0-compute",
+          "to": "t1-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-store--t1-c0-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c0-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-weight--t1-c1-compute",
+          "from": "t1-c1-weight",
+          "to": "t1-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-wait--t1-c1-input",
+          "from": "t1-c1-wait",
+          "to": "t1-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c1-input--t1-c1-compute",
+          "from": "t1-c1-input",
+          "to": "t1-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-compute--t1-c1-store",
+          "from": "t1-c1-compute",
+          "to": "t1-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-store--t1-c1-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c1-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c0-weight--t2-c0-compute",
+          "from": "t2-c0-weight",
+          "to": "t2-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-wait--t2-c0-input",
+          "from": "t2-c0-wait",
+          "to": "t2-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-input--t2-c0-compute",
+          "from": "t2-c0-input",
+          "to": "t2-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-compute--t2-c0-store",
+          "from": "t2-c0-compute",
+          "to": "t2-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-store--t2-c0-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c0-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-weight--t2-c1-compute",
+          "from": "t2-c1-weight",
+          "to": "t2-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-wait--t2-c1-input",
+          "from": "t2-c1-wait",
+          "to": "t2-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c1-input--t2-c1-compute",
+          "from": "t2-c1-input",
+          "to": "t2-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-compute--t2-c1-store",
+          "from": "t2-c1-compute",
+          "to": "t2-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-store--t2-c1-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c1-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        }
+      ]
+    },
+    {
+      "id": "baseline",
+      "label": "Baseline",
+      "events": [
+        {
+          "id": "t0-sqe",
+          "taskId": "task0",
+          "laneId": "stars",
+          "name": "SQE read / decode",
+          "kind": "schedule",
+          "start": 0,
+          "duration": 3,
+          "fetchIds": [
+            "t0-c0-fetch",
+            "t0-c1-fetch"
+          ],
+          "args": {
+            "stage": "sqe",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t0-dispatch",
+          "taskId": "task0",
+          "laneId": "hwts",
+          "name": "Dispatch request",
+          "kind": "schedule",
+          "start": 5,
+          "duration": 4,
+          "fetchIds": [
+            "t0-c0-fetch",
+            "t0-c1-fetch"
+          ],
+          "args": {
+            "stage": "dispatch",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t0-c0-fetch",
+          "taskId": "task0",
+          "laneId": "c0-fetch",
+          "kind": "fetch",
+          "start": 10,
+          "duration": 3,
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-args",
+          "taskId": "task0",
+          "laneId": "c0-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 13,
+          "duration": 2,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-weight",
+          "taskId": "task0",
+          "laneId": "c0-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 15,
+          "duration": 8,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-wait",
+          "taskId": "task0",
+          "laneId": "c0-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 15,
+          "duration": 0,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-input",
+          "taskId": "task0",
+          "laneId": "c0-load",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 23,
+          "duration": 10,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-compute",
+          "taskId": "task0",
+          "laneId": "c0-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 33,
+          "duration": 15,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c0-store",
+          "taskId": "task0",
+          "laneId": "c0-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 48,
+          "duration": 30,
+          "fetchId": "t0-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t0-c1-fetch",
+          "taskId": "task0",
+          "laneId": "c1-fetch",
+          "kind": "fetch",
+          "start": 12,
+          "duration": 3,
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-args",
+          "taskId": "task0",
+          "laneId": "c1-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 15,
+          "duration": 2,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-weight",
+          "taskId": "task0",
+          "laneId": "c1-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 17,
+          "duration": 8,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-wait",
+          "taskId": "task0",
+          "laneId": "c1-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 17,
+          "duration": 0,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-input",
+          "taskId": "task0",
+          "laneId": "c1-load",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 25,
+          "duration": 10,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-compute",
+          "taskId": "task0",
+          "laneId": "c1-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 35,
+          "duration": 15,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t0-c1-store",
+          "taskId": "task0",
+          "laneId": "c1-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 50,
+          "duration": 30,
+          "fetchId": "t0-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-sqe",
+          "taskId": "task1",
+          "laneId": "stars",
+          "name": "SQE read / decode",
+          "kind": "schedule",
+          "start": 80,
+          "duration": 4,
+          "fetchIds": [
+            "t1-c0-fetch",
+            "t1-c1-fetch"
+          ],
+          "args": {
+            "stage": "sqe",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t1-hwts",
+          "taskId": "task1",
+          "laneId": "hwts",
+          "name": "HWTS processing",
+          "kind": "schedule",
+          "start": 87,
+          "duration": 6,
+          "fetchIds": [
+            "t1-c0-fetch",
+            "t1-c1-fetch"
+          ],
+          "args": {
+            "stage": "hwts",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t1-sc",
+          "taskId": "task1",
+          "laneId": "hwts",
+          "name": "SC accepts task",
+          "kind": "schedule",
+          "start": 96,
+          "duration": 3,
+          "fetchIds": [
+            "t1-c0-fetch",
+            "t1-c1-fetch"
+          ],
+          "args": {
+            "stage": "sc",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t1-c0-fetch",
+          "taskId": "task1",
+          "laneId": "c0-fetch",
+          "kind": "fetch",
+          "start": 100,
+          "duration": 3,
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-args",
+          "taskId": "task1",
+          "laneId": "c0-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 103,
+          "duration": 2,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-weight",
+          "taskId": "task1",
+          "laneId": "c0-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 105,
+          "duration": 8,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-wait",
+          "taskId": "task1",
+          "laneId": "c0-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 105,
+          "duration": 0,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-input",
+          "taskId": "task1",
+          "laneId": "c0-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 113,
+          "duration": 10,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-compute",
+          "taskId": "task1",
+          "laneId": "c0-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 123,
+          "duration": 15,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c0-store",
+          "taskId": "task1",
+          "laneId": "c0-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 138,
+          "duration": 30,
+          "fetchId": "t1-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t1-c1-fetch",
+          "taskId": "task1",
+          "laneId": "c1-fetch",
+          "kind": "fetch",
+          "start": 102,
+          "duration": 3,
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-args",
+          "taskId": "task1",
+          "laneId": "c1-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 105,
+          "duration": 2,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-weight",
+          "taskId": "task1",
+          "laneId": "c1-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 107,
+          "duration": 8,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-wait",
+          "taskId": "task1",
+          "laneId": "c1-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 107,
+          "duration": 0,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-input",
+          "taskId": "task1",
+          "laneId": "c1-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 115,
+          "duration": 10,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-compute",
+          "taskId": "task1",
+          "laneId": "c1-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 125,
+          "duration": 15,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t1-c1-store",
+          "taskId": "task1",
+          "laneId": "c1-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 140,
+          "duration": 30,
+          "fetchId": "t1-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-dispatch",
+          "taskId": "task2",
+          "laneId": "hwts",
+          "name": "Single scheduling stage",
+          "kind": "schedule",
+          "start": 170,
+          "duration": 6,
+          "fetchIds": [
+            "t2-c0-fetch",
+            "t2-c1-fetch"
+          ],
+          "args": {
+            "stage": "dispatch",
+            "scope": "shared NPU scheduling; counted once"
+          }
+        },
+        {
+          "id": "t2-c0-fetch",
+          "taskId": "task2",
+          "laneId": "c0-fetch",
+          "kind": "fetch",
+          "start": 178,
+          "duration": 3,
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-args",
+          "taskId": "task2",
+          "laneId": "c0-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 181,
+          "duration": 2,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-weight",
+          "taskId": "task2",
+          "laneId": "c0-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 183,
+          "duration": 8,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-wait",
+          "taskId": "task2",
+          "laneId": "c0-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 183,
+          "duration": 0,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-input",
+          "taskId": "task2",
+          "laneId": "c0-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 191,
+          "duration": 10,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-compute",
+          "taskId": "task2",
+          "laneId": "c0-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 201,
+          "duration": 15,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c0-store",
+          "taskId": "task2",
+          "laneId": "c0-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 216,
+          "duration": 30,
+          "fetchId": "t2-c0-fetch",
+          "blockId": "0"
+        },
+        {
+          "id": "t2-c1-fetch",
+          "taskId": "task2",
+          "laneId": "c1-fetch",
+          "kind": "fetch",
+          "start": 180,
+          "duration": 3,
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-args",
+          "taskId": "task2",
+          "laneId": "c1-s",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 183,
+          "duration": 2,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-weight",
+          "taskId": "task2",
+          "laneId": "c1-load",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 185,
+          "duration": 8,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-wait",
+          "taskId": "task2",
+          "laneId": "c1-s",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 185,
+          "duration": 0,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-input",
+          "taskId": "task2",
+          "laneId": "c1-load",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 193,
+          "duration": 10,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-compute",
+          "taskId": "task2",
+          "laneId": "c1-v",
+          "name": "vector compute",
+          "kind": "compute",
+          "start": 203,
+          "duration": 15,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        },
+        {
+          "id": "t2-c1-store",
+          "taskId": "task2",
+          "laneId": "c1-store",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 218,
+          "duration": 30,
+          "fetchId": "t2-c1-fetch",
+          "blockId": "1"
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "t0-c0-weight--t0-c0-compute",
+          "from": "t0-c0-weight",
+          "to": "t0-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-wait--t0-c0-input",
+          "from": "t0-c0-wait",
+          "to": "t0-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-input--t0-c0-compute",
+          "from": "t0-c0-input",
+          "to": "t0-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-compute--t0-c0-store",
+          "from": "t0-c0-compute",
+          "to": "t0-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-weight--t0-c1-compute",
+          "from": "t0-c1-weight",
+          "to": "t0-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-wait--t0-c1-input",
+          "from": "t0-c1-wait",
+          "to": "t0-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c1-input--t0-c1-compute",
+          "from": "t0-c1-input",
+          "to": "t0-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-compute--t0-c1-store",
+          "from": "t0-c1-compute",
+          "to": "t0-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-weight--t1-c0-compute",
+          "from": "t1-c0-weight",
+          "to": "t1-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-wait--t1-c0-input",
+          "from": "t1-c0-wait",
+          "to": "t1-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-input--t1-c0-compute",
+          "from": "t1-c0-input",
+          "to": "t1-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-compute--t1-c0-store",
+          "from": "t1-c0-compute",
+          "to": "t1-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-store--t1-c0-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c0-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-weight--t1-c1-compute",
+          "from": "t1-c1-weight",
+          "to": "t1-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-wait--t1-c1-input",
+          "from": "t1-c1-wait",
+          "to": "t1-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c1-input--t1-c1-compute",
+          "from": "t1-c1-input",
+          "to": "t1-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-compute--t1-c1-store",
+          "from": "t1-c1-compute",
+          "to": "t1-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-store--t1-c1-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c1-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c0-weight--t2-c0-compute",
+          "from": "t2-c0-weight",
+          "to": "t2-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-wait--t2-c0-input",
+          "from": "t2-c0-wait",
+          "to": "t2-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-input--t2-c0-compute",
+          "from": "t2-c0-input",
+          "to": "t2-c0-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-compute--t2-c0-store",
+          "from": "t2-c0-compute",
+          "to": "t2-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-store--t2-c0-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c0-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-weight--t2-c1-compute",
+          "from": "t2-c1-weight",
+          "to": "t2-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-wait--t2-c1-input",
+          "from": "t2-c1-wait",
+          "to": "t2-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c1-input--t2-c1-compute",
+          "from": "t2-c1-input",
+          "to": "t2-c1-compute",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-compute--t2-c1-store",
+          "from": "t2-c1-compute",
+          "to": "t2-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-store--t2-c1-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c1-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        }
+      ]
+    }
+  ]
+}

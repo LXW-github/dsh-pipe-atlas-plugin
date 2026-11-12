@@ -1,0 +1,3 @@
+- insert:
+    - id: dsh-pipe-atlas
+      name: '@local/dsh-pipe-atlas'

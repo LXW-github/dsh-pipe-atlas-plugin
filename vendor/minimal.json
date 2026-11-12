@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.0",
+  "metadata": {
+    "title": "Minimal MTE2 → VECTOR → MTE3",
+    "timeUnit": "us",
+    "source": {
+      "kind": "synthetic"
+    }
+  },
+  "cores": [
+    {
+      "id": "core0",
+      "label": "Core 0"
+    }
+  ],
+  "lanes": [
+    {
+      "id": "mte2",
+      "coreId": "core0",
+      "engine": "AIV",
+      "pipe": "MTE2",
+      "label": "MTE2"
+    },
+    {
+      "id": "vector",
+      "coreId": "core0",
+      "engine": "AIV",
+      "pipe": "VECTOR",
+      "label": "VECTOR"
+    },
+    {
+      "id": "mte3",
+      "coreId": "core0",
+      "engine": "AIV",
+      "pipe": "MTE3",
+      "label": "MTE3"
+    }
+  ],
+  "kernels": [
+    {
+      "id": "add",
+      "label": "vector_add",
+      "color": "#1b9c85"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "main",
+      "label": "Main",
+      "events": [
+        {
+          "id": "load",
+          "laneId": "mte2",
+          "kernelId": "add",
+          "name": "load",
+          "kind": "transfer",
+          "start": 0,
+          "duration": 10
+        },
+        {
+          "id": "add",
+          "laneId": "vector",
+          "kernelId": "add",
+          "name": "vector_add",
+          "kind": "compute",
+          "start": 10,
+          "duration": 8
+        },
+        {
+          "id": "store",
+          "laneId": "mte3",
+          "kernelId": "add",
+          "name": "store",
+          "kind": "transfer",
+          "start": 18,
+          "duration": 6
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "load-add",
+          "from": "load",
+          "to": "add",
+          "type": "data"
+        },
+        {
+          "id": "add-store",
+          "from": "add",
+          "to": "store",
+          "type": "data"
+        }
+      ]
+    }
+  ]
+}

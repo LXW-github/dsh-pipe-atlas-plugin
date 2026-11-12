@@ -1,0 +1,6810 @@
+{
+  "schemaVersion": "1.1",
+  "metadata": {
+    "title": "整网 · 5 Tasks × 4 Physical Cores",
+    "description": "Synthetic network fragment. One Cube and one Vector per physical core. Overlaps are derived from compute/transfer intervals; all dependent input loads wait for every predecessor output.",
+    "timeUnit": "us",
+    "device": "NPU 0 · 4 physical cores · Cube / Vector 1:1",
+    "source": {
+      "kind": "synthetic",
+      "generator": "Pipe Atlas network demo"
+    }
+  },
+  "devices": [
+    {
+      "id": "npu0",
+      "label": "NPU 0"
+    }
+  ],
+  "cores": [
+    {
+      "id": "core-0",
+      "label": "Core 0",
+      "deviceId": "npu0",
+      "cubeId": "cube-0",
+      "vectorId": "vector-0"
+    },
+    {
+      "id": "core-1",
+      "label": "Core 1",
+      "deviceId": "npu0",
+      "cubeId": "cube-1",
+      "vectorId": "vector-1"
+    },
+    {
+      "id": "core-2",
+      "label": "Core 2",
+      "deviceId": "npu0",
+      "cubeId": "cube-2",
+      "vectorId": "vector-2"
+    },
+    {
+      "id": "core-3",
+      "label": "Core 3",
+      "deviceId": "npu0",
+      "cubeId": "cube-3",
+      "vectorId": "vector-3"
+    }
+  ],
+  "lanes": [
+    {
+      "id": "c0-s",
+      "label": "SCALAR",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "SCALAR"
+    },
+    {
+      "id": "c0-v2",
+      "label": "MTE2",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c0-v",
+      "label": "VECTOR",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "VECTOR"
+    },
+    {
+      "id": "c0-v3",
+      "label": "MTE3",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE3"
+    },
+    {
+      "id": "c0-c2",
+      "label": "MTE2",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c0-c1",
+      "label": "MTE1",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "MTE1"
+    },
+    {
+      "id": "c0-c",
+      "label": "CUBE",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "CUBE"
+    },
+    {
+      "id": "c0-f",
+      "label": "FIXP",
+      "coreId": "core-0",
+      "engine": "AIC",
+      "pipe": "FIXP"
+    },
+    {
+      "id": "c1-s",
+      "label": "SCALAR",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "SCALAR"
+    },
+    {
+      "id": "c1-v2",
+      "label": "MTE2",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c1-v",
+      "label": "VECTOR",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "VECTOR"
+    },
+    {
+      "id": "c1-v3",
+      "label": "MTE3",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "MTE3"
+    },
+    {
+      "id": "c1-c2",
+      "label": "MTE2",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c1-c1",
+      "label": "MTE1",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "MTE1"
+    },
+    {
+      "id": "c1-c",
+      "label": "CUBE",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "CUBE"
+    },
+    {
+      "id": "c1-f",
+      "label": "FIXP",
+      "coreId": "core-1",
+      "engine": "AIC",
+      "pipe": "FIXP"
+    },
+    {
+      "id": "c2-s",
+      "label": "SCALAR",
+      "coreId": "core-2",
+      "engine": "AIV",
+      "pipe": "SCALAR"
+    },
+    {
+      "id": "c2-v2",
+      "label": "MTE2",
+      "coreId": "core-2",
+      "engine": "AIV",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c2-v",
+      "label": "VECTOR",
+      "coreId": "core-2",
+      "engine": "AIV",
+      "pipe": "VECTOR"
+    },
+    {
+      "id": "c2-v3",
+      "label": "MTE3",
+      "coreId": "core-2",
+      "engine": "AIV",
+      "pipe": "MTE3"
+    },
+    {
+      "id": "c2-c2",
+      "label": "MTE2",
+      "coreId": "core-2",
+      "engine": "AIC",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c2-c1",
+      "label": "MTE1",
+      "coreId": "core-2",
+      "engine": "AIC",
+      "pipe": "MTE1"
+    },
+    {
+      "id": "c2-c",
+      "label": "CUBE",
+      "coreId": "core-2",
+      "engine": "AIC",
+      "pipe": "CUBE"
+    },
+    {
+      "id": "c2-f",
+      "label": "FIXP",
+      "coreId": "core-2",
+      "engine": "AIC",
+      "pipe": "FIXP"
+    },
+    {
+      "id": "c3-s",
+      "label": "SCALAR",
+      "coreId": "core-3",
+      "engine": "AIV",
+      "pipe": "SCALAR"
+    },
+    {
+      "id": "c3-v2",
+      "label": "MTE2",
+      "coreId": "core-3",
+      "engine": "AIV",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c3-v",
+      "label": "VECTOR",
+      "coreId": "core-3",
+      "engine": "AIV",
+      "pipe": "VECTOR"
+    },
+    {
+      "id": "c3-v3",
+      "label": "MTE3",
+      "coreId": "core-3",
+      "engine": "AIV",
+      "pipe": "MTE3"
+    },
+    {
+      "id": "c3-c2",
+      "label": "MTE2",
+      "coreId": "core-3",
+      "engine": "AIC",
+      "pipe": "MTE2"
+    },
+    {
+      "id": "c3-c1",
+      "label": "MTE1",
+      "coreId": "core-3",
+      "engine": "AIC",
+      "pipe": "MTE1"
+    },
+    {
+      "id": "c3-c",
+      "label": "CUBE",
+      "coreId": "core-3",
+      "engine": "AIC",
+      "pipe": "CUBE"
+    },
+    {
+      "id": "c3-f",
+      "label": "FIXP",
+      "coreId": "core-3",
+      "engine": "AIC",
+      "pipe": "FIXP"
+    }
+  ],
+  "kernels": [
+    {
+      "id": "matmul",
+      "label": "matmul_relu"
+    },
+    {
+      "id": "norm",
+      "label": "rms_norm"
+    },
+    {
+      "id": "residual",
+      "label": "residual_add"
+    },
+    {
+      "id": "project",
+      "label": "output_projection"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task0",
+      "label": "task0",
+      "kernelId": "matmul",
+      "dependsOn": [],
+      "color": "#1b9c85"
+    },
+    {
+      "id": "task1",
+      "label": "task1",
+      "kernelId": "norm",
+      "dependsOn": [
+        "task0"
+      ],
+      "color": "#6d71d5"
+    },
+    {
+      "id": "task2",
+      "label": "task2",
+      "kernelId": "residual",
+      "dependsOn": [
+        "task1"
+      ],
+      "color": "#cb9353"
+    },
+    {
+      "id": "task3",
+      "label": "task3",
+      "kernelId": "norm",
+      "dependsOn": [
+        "task2"
+      ],
+      "color": "#438ac7"
+    },
+    {
+      "id": "task4",
+      "label": "task4",
+      "kernelId": "project",
+      "dependsOn": [
+        "task3"
+      ],
+      "color": "#bb719e"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "early-start",
+      "label": "Early Start",
+      "events": [
+        {
+          "id": "t0-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 0,
+          "duration": 2
+        },
+        {
+          "id": "t0-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 3,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 16,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c0-input",
+          "laneId": "c0-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 17,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c0-l0",
+          "laneId": "c0-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 28,
+          "duration": 5
+        },
+        {
+          "id": "t0-c0-cube",
+          "laneId": "c0-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 33,
+          "duration": 23
+        },
+        {
+          "id": "t0-c0-fix",
+          "laneId": "c0-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 56,
+          "duration": 7
+        },
+        {
+          "id": "t0-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 63,
+          "duration": 7
+        },
+        {
+          "id": "t0-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 70,
+          "duration": 32
+        },
+        {
+          "id": "t0-c0-next",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 67,
+          "duration": 0
+        },
+        {
+          "id": "t0-c0-fake",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 70,
+          "duration": 0
+        },
+        {
+          "id": "t0-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 3,
+          "duration": 2
+        },
+        {
+          "id": "t0-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 19,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c1-input",
+          "laneId": "c1-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 20,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c1-l0",
+          "laneId": "c1-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 31,
+          "duration": 5
+        },
+        {
+          "id": "t0-c1-cube",
+          "laneId": "c1-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 36,
+          "duration": 23
+        },
+        {
+          "id": "t0-c1-fix",
+          "laneId": "c1-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 59,
+          "duration": 7
+        },
+        {
+          "id": "t0-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 66,
+          "duration": 7
+        },
+        {
+          "id": "t0-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 73,
+          "duration": 32
+        },
+        {
+          "id": "t0-c1-next",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 70,
+          "duration": 0
+        },
+        {
+          "id": "t0-c1-fake",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 73,
+          "duration": 0
+        },
+        {
+          "id": "t0-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 2
+        },
+        {
+          "id": "t0-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 9,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 22,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c2-input",
+          "laneId": "c2-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 23,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c2-l0",
+          "laneId": "c2-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 34,
+          "duration": 5
+        },
+        {
+          "id": "t0-c2-cube",
+          "laneId": "c2-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 39,
+          "duration": 23
+        },
+        {
+          "id": "t0-c2-fix",
+          "laneId": "c2-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 62,
+          "duration": 7
+        },
+        {
+          "id": "t0-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 69,
+          "duration": 7
+        },
+        {
+          "id": "t0-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 76,
+          "duration": 32
+        },
+        {
+          "id": "t0-c2-next",
+          "laneId": "c2-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 73,
+          "duration": 0
+        },
+        {
+          "id": "t0-c2-fake",
+          "laneId": "c2-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 76,
+          "duration": 0
+        },
+        {
+          "id": "t0-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 9,
+          "duration": 2
+        },
+        {
+          "id": "t0-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 12,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 25,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c3-input",
+          "laneId": "c3-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 26,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c3-l0",
+          "laneId": "c3-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 37,
+          "duration": 5
+        },
+        {
+          "id": "t0-c3-cube",
+          "laneId": "c3-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 42,
+          "duration": 23
+        },
+        {
+          "id": "t0-c3-fix",
+          "laneId": "c3-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 65,
+          "duration": 7
+        },
+        {
+          "id": "t0-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 72,
+          "duration": 7
+        },
+        {
+          "id": "t0-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 79,
+          "duration": 32
+        },
+        {
+          "id": "t0-c3-next",
+          "laneId": "c3-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 76,
+          "duration": 0
+        },
+        {
+          "id": "t0-c3-fake",
+          "laneId": "c3-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 79,
+          "duration": 0
+        },
+        {
+          "id": "t1-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 80,
+          "duration": 2
+        },
+        {
+          "id": "t1-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 83,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 96,
+          "duration": 15,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c0-input",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 111,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "norm",
+          "kind": "compute",
+          "start": 122,
+          "duration": 13
+        },
+        {
+          "id": "t1-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 135,
+          "duration": 32
+        },
+        {
+          "id": "t1-c0-next",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 132,
+          "duration": 0
+        },
+        {
+          "id": "t1-c0-fake",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 135,
+          "duration": 0
+        },
+        {
+          "id": "t1-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 83,
+          "duration": 2
+        },
+        {
+          "id": "t1-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 86,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 99,
+          "duration": 12,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c1-input",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 111,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "norm",
+          "kind": "compute",
+          "start": 122,
+          "duration": 13
+        },
+        {
+          "id": "t1-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 135,
+          "duration": 32
+        },
+        {
+          "id": "t1-c1-next",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 132,
+          "duration": 0
+        },
+        {
+          "id": "t1-c1-fake",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 135,
+          "duration": 0
+        },
+        {
+          "id": "t1-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 86,
+          "duration": 2
+        },
+        {
+          "id": "t1-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 89,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 102,
+          "duration": 9,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c2-input",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 111,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "norm",
+          "kind": "compute",
+          "start": 122,
+          "duration": 13
+        },
+        {
+          "id": "t1-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 135,
+          "duration": 32
+        },
+        {
+          "id": "t1-c2-next",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 132,
+          "duration": 0
+        },
+        {
+          "id": "t1-c2-fake",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 135,
+          "duration": 0
+        },
+        {
+          "id": "t1-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 89,
+          "duration": 2
+        },
+        {
+          "id": "t1-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 92,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 105,
+          "duration": 6,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c3-input",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 111,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "norm",
+          "kind": "compute",
+          "start": 122,
+          "duration": 13
+        },
+        {
+          "id": "t1-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 135,
+          "duration": 32
+        },
+        {
+          "id": "t1-c3-next",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 132,
+          "duration": 0
+        },
+        {
+          "id": "t1-c3-fake",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 135,
+          "duration": 0
+        },
+        {
+          "id": "t2-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 136,
+          "duration": 2
+        },
+        {
+          "id": "t2-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 139,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 152,
+          "duration": 15,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c0-input",
+          "laneId": "c0-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 167,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "residual",
+          "kind": "compute",
+          "start": 178,
+          "duration": 13
+        },
+        {
+          "id": "t2-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 191,
+          "duration": 32
+        },
+        {
+          "id": "t2-c0-next",
+          "laneId": "c0-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 188,
+          "duration": 0
+        },
+        {
+          "id": "t2-c0-fake",
+          "laneId": "c0-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 191,
+          "duration": 0
+        },
+        {
+          "id": "t2-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 139,
+          "duration": 2
+        },
+        {
+          "id": "t2-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 142,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 155,
+          "duration": 12,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c1-input",
+          "laneId": "c1-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 167,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "residual",
+          "kind": "compute",
+          "start": 178,
+          "duration": 13
+        },
+        {
+          "id": "t2-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 191,
+          "duration": 32
+        },
+        {
+          "id": "t2-c1-next",
+          "laneId": "c1-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 188,
+          "duration": 0
+        },
+        {
+          "id": "t2-c1-fake",
+          "laneId": "c1-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 191,
+          "duration": 0
+        },
+        {
+          "id": "t2-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 142,
+          "duration": 2
+        },
+        {
+          "id": "t2-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 145,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 158,
+          "duration": 9,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c2-input",
+          "laneId": "c2-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 167,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "residual",
+          "kind": "compute",
+          "start": 178,
+          "duration": 13
+        },
+        {
+          "id": "t2-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 191,
+          "duration": 32
+        },
+        {
+          "id": "t2-c2-next",
+          "laneId": "c2-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 188,
+          "duration": 0
+        },
+        {
+          "id": "t2-c2-fake",
+          "laneId": "c2-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 191,
+          "duration": 0
+        },
+        {
+          "id": "t2-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 145,
+          "duration": 2
+        },
+        {
+          "id": "t2-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 148,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 161,
+          "duration": 6,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c3-input",
+          "laneId": "c3-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 167,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "residual",
+          "kind": "compute",
+          "start": 178,
+          "duration": 13
+        },
+        {
+          "id": "t2-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 191,
+          "duration": 32
+        },
+        {
+          "id": "t2-c3-next",
+          "laneId": "c3-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 188,
+          "duration": 0
+        },
+        {
+          "id": "t2-c3-fake",
+          "laneId": "c3-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 191,
+          "duration": 0
+        },
+        {
+          "id": "t3-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 192,
+          "duration": 2
+        },
+        {
+          "id": "t3-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 195,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 208,
+          "duration": 15,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c0-input",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 223,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "norm",
+          "kind": "compute",
+          "start": 234,
+          "duration": 13
+        },
+        {
+          "id": "t3-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 247,
+          "duration": 32
+        },
+        {
+          "id": "t3-c0-next",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 244,
+          "duration": 0
+        },
+        {
+          "id": "t3-c0-fake",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 247,
+          "duration": 0
+        },
+        {
+          "id": "t3-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 195,
+          "duration": 2
+        },
+        {
+          "id": "t3-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 198,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 211,
+          "duration": 12,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c1-input",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 223,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "norm",
+          "kind": "compute",
+          "start": 234,
+          "duration": 13
+        },
+        {
+          "id": "t3-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 247,
+          "duration": 32
+        },
+        {
+          "id": "t3-c1-next",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 244,
+          "duration": 0
+        },
+        {
+          "id": "t3-c1-fake",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 247,
+          "duration": 0
+        },
+        {
+          "id": "t3-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 198,
+          "duration": 2
+        },
+        {
+          "id": "t3-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 201,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 214,
+          "duration": 9,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c2-input",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 223,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "norm",
+          "kind": "compute",
+          "start": 234,
+          "duration": 13
+        },
+        {
+          "id": "t3-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 247,
+          "duration": 32
+        },
+        {
+          "id": "t3-c2-next",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 244,
+          "duration": 0
+        },
+        {
+          "id": "t3-c2-fake",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 247,
+          "duration": 0
+        },
+        {
+          "id": "t3-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 201,
+          "duration": 2
+        },
+        {
+          "id": "t3-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 204,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 217,
+          "duration": 6,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c3-input",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 223,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "norm",
+          "kind": "compute",
+          "start": 234,
+          "duration": 13
+        },
+        {
+          "id": "t3-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 247,
+          "duration": 32
+        },
+        {
+          "id": "t3-c3-next",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 244,
+          "duration": 0
+        },
+        {
+          "id": "t3-c3-fake",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 247,
+          "duration": 0
+        },
+        {
+          "id": "t4-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 248,
+          "duration": 2
+        },
+        {
+          "id": "t4-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 251,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 264,
+          "duration": 15,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c0-input",
+          "laneId": "c0-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 279,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c0-l0",
+          "laneId": "c0-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 290,
+          "duration": 5
+        },
+        {
+          "id": "t4-c0-cube",
+          "laneId": "c0-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 295,
+          "duration": 23
+        },
+        {
+          "id": "t4-c0-fix",
+          "laneId": "c0-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 318,
+          "duration": 7
+        },
+        {
+          "id": "t4-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "project",
+          "kind": "compute",
+          "start": 325,
+          "duration": 7
+        },
+        {
+          "id": "t4-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 332,
+          "duration": 32
+        },
+        {
+          "id": "t4-c0-next",
+          "laneId": "c0-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 329,
+          "duration": 0
+        },
+        {
+          "id": "t4-c0-fake",
+          "laneId": "c0-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 332,
+          "duration": 0
+        },
+        {
+          "id": "t4-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 251,
+          "duration": 2
+        },
+        {
+          "id": "t4-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 254,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 267,
+          "duration": 12,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c1-input",
+          "laneId": "c1-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 279,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c1-l0",
+          "laneId": "c1-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 290,
+          "duration": 5
+        },
+        {
+          "id": "t4-c1-cube",
+          "laneId": "c1-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 295,
+          "duration": 23
+        },
+        {
+          "id": "t4-c1-fix",
+          "laneId": "c1-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 318,
+          "duration": 7
+        },
+        {
+          "id": "t4-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "project",
+          "kind": "compute",
+          "start": 325,
+          "duration": 7
+        },
+        {
+          "id": "t4-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 332,
+          "duration": 32
+        },
+        {
+          "id": "t4-c1-next",
+          "laneId": "c1-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 329,
+          "duration": 0
+        },
+        {
+          "id": "t4-c1-fake",
+          "laneId": "c1-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 332,
+          "duration": 0
+        },
+        {
+          "id": "t4-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 254,
+          "duration": 2
+        },
+        {
+          "id": "t4-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 257,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 270,
+          "duration": 9,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c2-input",
+          "laneId": "c2-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 279,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c2-l0",
+          "laneId": "c2-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 290,
+          "duration": 5
+        },
+        {
+          "id": "t4-c2-cube",
+          "laneId": "c2-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 295,
+          "duration": 23
+        },
+        {
+          "id": "t4-c2-fix",
+          "laneId": "c2-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 318,
+          "duration": 7
+        },
+        {
+          "id": "t4-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "project",
+          "kind": "compute",
+          "start": 325,
+          "duration": 7
+        },
+        {
+          "id": "t4-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 332,
+          "duration": 32
+        },
+        {
+          "id": "t4-c2-next",
+          "laneId": "c2-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 329,
+          "duration": 0
+        },
+        {
+          "id": "t4-c2-fake",
+          "laneId": "c2-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 332,
+          "duration": 0
+        },
+        {
+          "id": "t4-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 257,
+          "duration": 2
+        },
+        {
+          "id": "t4-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 260,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "wait",
+          "start": 273,
+          "duration": 6,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c3-input",
+          "laneId": "c3-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 279,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c3-l0",
+          "laneId": "c3-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 290,
+          "duration": 5
+        },
+        {
+          "id": "t4-c3-cube",
+          "laneId": "c3-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 295,
+          "duration": 23
+        },
+        {
+          "id": "t4-c3-fix",
+          "laneId": "c3-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 318,
+          "duration": 7
+        },
+        {
+          "id": "t4-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "project",
+          "kind": "compute",
+          "start": 325,
+          "duration": 7
+        },
+        {
+          "id": "t4-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 332,
+          "duration": 32
+        },
+        {
+          "id": "t4-c3-next",
+          "laneId": "c3-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "get_next_task",
+          "kind": "marker",
+          "start": 329,
+          "duration": 0
+        },
+        {
+          "id": "t4-c3-fake",
+          "laneId": "c3-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "fake_end",
+          "kind": "marker",
+          "start": 332,
+          "duration": 0
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "t0-c0-wait--t0-c0-input",
+          "from": "t0-c0-wait",
+          "to": "t0-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-input--t0-c0-l0",
+          "from": "t0-c0-input",
+          "to": "t0-c0-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-l0--t0-c0-cube",
+          "from": "t0-c0-l0",
+          "to": "t0-c0-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-cube--t0-c0-fix",
+          "from": "t0-c0-cube",
+          "to": "t0-c0-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-fix--t0-c0-vec",
+          "from": "t0-c0-fix",
+          "to": "t0-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-weight--t0-c0-vec",
+          "from": "t0-c0-weight",
+          "to": "t0-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-vec--t0-c0-store",
+          "from": "t0-c0-vec",
+          "to": "t0-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-wait--t0-c1-input",
+          "from": "t0-c1-wait",
+          "to": "t0-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c1-input--t0-c1-l0",
+          "from": "t0-c1-input",
+          "to": "t0-c1-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-l0--t0-c1-cube",
+          "from": "t0-c1-l0",
+          "to": "t0-c1-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-cube--t0-c1-fix",
+          "from": "t0-c1-cube",
+          "to": "t0-c1-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-fix--t0-c1-vec",
+          "from": "t0-c1-fix",
+          "to": "t0-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-weight--t0-c1-vec",
+          "from": "t0-c1-weight",
+          "to": "t0-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-vec--t0-c1-store",
+          "from": "t0-c1-vec",
+          "to": "t0-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-wait--t0-c2-input",
+          "from": "t0-c2-wait",
+          "to": "t0-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c2-input--t0-c2-l0",
+          "from": "t0-c2-input",
+          "to": "t0-c2-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-l0--t0-c2-cube",
+          "from": "t0-c2-l0",
+          "to": "t0-c2-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-cube--t0-c2-fix",
+          "from": "t0-c2-cube",
+          "to": "t0-c2-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-fix--t0-c2-vec",
+          "from": "t0-c2-fix",
+          "to": "t0-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-weight--t0-c2-vec",
+          "from": "t0-c2-weight",
+          "to": "t0-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-vec--t0-c2-store",
+          "from": "t0-c2-vec",
+          "to": "t0-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-wait--t0-c3-input",
+          "from": "t0-c3-wait",
+          "to": "t0-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c3-input--t0-c3-l0",
+          "from": "t0-c3-input",
+          "to": "t0-c3-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-l0--t0-c3-cube",
+          "from": "t0-c3-l0",
+          "to": "t0-c3-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-cube--t0-c3-fix",
+          "from": "t0-c3-cube",
+          "to": "t0-c3-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-fix--t0-c3-vec",
+          "from": "t0-c3-fix",
+          "to": "t0-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-weight--t0-c3-vec",
+          "from": "t0-c3-weight",
+          "to": "t0-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-vec--t0-c3-store",
+          "from": "t0-c3-vec",
+          "to": "t0-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-wait--t1-c0-input",
+          "from": "t1-c0-wait",
+          "to": "t1-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c0-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c0-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c0-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c0-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c0-input--t1-c0-vec",
+          "from": "t1-c0-input",
+          "to": "t1-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-weight--t1-c0-vec",
+          "from": "t1-c0-weight",
+          "to": "t1-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-vec--t1-c0-store",
+          "from": "t1-c0-vec",
+          "to": "t1-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-wait--t1-c1-input",
+          "from": "t1-c1-wait",
+          "to": "t1-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c1-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c1-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c1-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c1-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-input--t1-c1-vec",
+          "from": "t1-c1-input",
+          "to": "t1-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-weight--t1-c1-vec",
+          "from": "t1-c1-weight",
+          "to": "t1-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-vec--t1-c1-store",
+          "from": "t1-c1-vec",
+          "to": "t1-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c2-wait--t1-c2-input",
+          "from": "t1-c2-wait",
+          "to": "t1-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c2-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c2-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c2-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c2-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-input--t1-c2-vec",
+          "from": "t1-c2-input",
+          "to": "t1-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c2-weight--t1-c2-vec",
+          "from": "t1-c2-weight",
+          "to": "t1-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c2-vec--t1-c2-store",
+          "from": "t1-c2-vec",
+          "to": "t1-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c3-wait--t1-c3-input",
+          "from": "t1-c3-wait",
+          "to": "t1-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c3-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c3-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c3-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c3-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-input--t1-c3-vec",
+          "from": "t1-c3-input",
+          "to": "t1-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c3-weight--t1-c3-vec",
+          "from": "t1-c3-weight",
+          "to": "t1-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c3-vec--t1-c3-store",
+          "from": "t1-c3-vec",
+          "to": "t1-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-wait--t2-c0-input",
+          "from": "t2-c0-wait",
+          "to": "t2-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c0-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c0-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c0-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c0-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c0-input--t2-c0-vec",
+          "from": "t2-c0-input",
+          "to": "t2-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-weight--t2-c0-vec",
+          "from": "t2-c0-weight",
+          "to": "t2-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-vec--t2-c0-store",
+          "from": "t2-c0-vec",
+          "to": "t2-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-wait--t2-c1-input",
+          "from": "t2-c1-wait",
+          "to": "t2-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c1-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c1-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c1-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c1-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-input--t2-c1-vec",
+          "from": "t2-c1-input",
+          "to": "t2-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-weight--t2-c1-vec",
+          "from": "t2-c1-weight",
+          "to": "t2-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-vec--t2-c1-store",
+          "from": "t2-c1-vec",
+          "to": "t2-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c2-wait--t2-c2-input",
+          "from": "t2-c2-wait",
+          "to": "t2-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c2-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c2-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c2-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c2-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-input--t2-c2-vec",
+          "from": "t2-c2-input",
+          "to": "t2-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c2-weight--t2-c2-vec",
+          "from": "t2-c2-weight",
+          "to": "t2-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c2-vec--t2-c2-store",
+          "from": "t2-c2-vec",
+          "to": "t2-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c3-wait--t2-c3-input",
+          "from": "t2-c3-wait",
+          "to": "t2-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c3-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c3-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c3-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c3-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-input--t2-c3-vec",
+          "from": "t2-c3-input",
+          "to": "t2-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c3-weight--t2-c3-vec",
+          "from": "t2-c3-weight",
+          "to": "t2-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c3-vec--t2-c3-store",
+          "from": "t2-c3-vec",
+          "to": "t2-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c0-wait--t3-c0-input",
+          "from": "t3-c0-wait",
+          "to": "t3-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c0-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c0-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c0-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c0-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c0-input--t3-c0-vec",
+          "from": "t3-c0-input",
+          "to": "t3-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c0-weight--t3-c0-vec",
+          "from": "t3-c0-weight",
+          "to": "t3-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c0-vec--t3-c0-store",
+          "from": "t3-c0-vec",
+          "to": "t3-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c1-wait--t3-c1-input",
+          "from": "t3-c1-wait",
+          "to": "t3-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c1-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c1-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c1-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c1-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-input--t3-c1-vec",
+          "from": "t3-c1-input",
+          "to": "t3-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c1-weight--t3-c1-vec",
+          "from": "t3-c1-weight",
+          "to": "t3-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c1-vec--t3-c1-store",
+          "from": "t3-c1-vec",
+          "to": "t3-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c2-wait--t3-c2-input",
+          "from": "t3-c2-wait",
+          "to": "t3-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c2-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c2-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c2-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c2-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-input--t3-c2-vec",
+          "from": "t3-c2-input",
+          "to": "t3-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c2-weight--t3-c2-vec",
+          "from": "t3-c2-weight",
+          "to": "t3-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c2-vec--t3-c2-store",
+          "from": "t3-c2-vec",
+          "to": "t3-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c3-wait--t3-c3-input",
+          "from": "t3-c3-wait",
+          "to": "t3-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c3-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c3-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c3-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c3-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-input--t3-c3-vec",
+          "from": "t3-c3-input",
+          "to": "t3-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c3-weight--t3-c3-vec",
+          "from": "t3-c3-weight",
+          "to": "t3-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c3-vec--t3-c3-store",
+          "from": "t3-c3-vec",
+          "to": "t3-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-wait--t4-c0-input",
+          "from": "t4-c0-wait",
+          "to": "t4-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c0-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c0-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c0-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c0-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c0-input--t4-c0-l0",
+          "from": "t4-c0-input",
+          "to": "t4-c0-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-l0--t4-c0-cube",
+          "from": "t4-c0-l0",
+          "to": "t4-c0-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-cube--t4-c0-fix",
+          "from": "t4-c0-cube",
+          "to": "t4-c0-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-fix--t4-c0-vec",
+          "from": "t4-c0-fix",
+          "to": "t4-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-weight--t4-c0-vec",
+          "from": "t4-c0-weight",
+          "to": "t4-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-vec--t4-c0-store",
+          "from": "t4-c0-vec",
+          "to": "t4-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-wait--t4-c1-input",
+          "from": "t4-c1-wait",
+          "to": "t4-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c1-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c1-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c1-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c1-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c1-input--t4-c1-l0",
+          "from": "t4-c1-input",
+          "to": "t4-c1-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-l0--t4-c1-cube",
+          "from": "t4-c1-l0",
+          "to": "t4-c1-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-cube--t4-c1-fix",
+          "from": "t4-c1-cube",
+          "to": "t4-c1-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-fix--t4-c1-vec",
+          "from": "t4-c1-fix",
+          "to": "t4-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-weight--t4-c1-vec",
+          "from": "t4-c1-weight",
+          "to": "t4-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-vec--t4-c1-store",
+          "from": "t4-c1-vec",
+          "to": "t4-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-wait--t4-c2-input",
+          "from": "t4-c2-wait",
+          "to": "t4-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c2-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c2-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c2-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c2-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c2-input--t4-c2-l0",
+          "from": "t4-c2-input",
+          "to": "t4-c2-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-l0--t4-c2-cube",
+          "from": "t4-c2-l0",
+          "to": "t4-c2-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-cube--t4-c2-fix",
+          "from": "t4-c2-cube",
+          "to": "t4-c2-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-fix--t4-c2-vec",
+          "from": "t4-c2-fix",
+          "to": "t4-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-weight--t4-c2-vec",
+          "from": "t4-c2-weight",
+          "to": "t4-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-vec--t4-c2-store",
+          "from": "t4-c2-vec",
+          "to": "t4-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-wait--t4-c3-input",
+          "from": "t4-c3-wait",
+          "to": "t4-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c3-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c3-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c3-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c3-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c3-input--t4-c3-l0",
+          "from": "t4-c3-input",
+          "to": "t4-c3-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-l0--t4-c3-cube",
+          "from": "t4-c3-l0",
+          "to": "t4-c3-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-cube--t4-c3-fix",
+          "from": "t4-c3-cube",
+          "to": "t4-c3-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-fix--t4-c3-vec",
+          "from": "t4-c3-fix",
+          "to": "t4-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-weight--t4-c3-vec",
+          "from": "t4-c3-weight",
+          "to": "t4-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-vec--t4-c3-store",
+          "from": "t4-c3-vec",
+          "to": "t4-c3-store",
+          "type": "data"
+        }
+      ],
+      "regions": []
+    },
+    {
+      "id": "baseline",
+      "label": "Baseline",
+      "events": [
+        {
+          "id": "t0-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 0,
+          "duration": 2
+        },
+        {
+          "id": "t0-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 3,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 16,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c0-input",
+          "laneId": "c0-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 17,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c0-l0",
+          "laneId": "c0-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 28,
+          "duration": 5
+        },
+        {
+          "id": "t0-c0-cube",
+          "laneId": "c0-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 33,
+          "duration": 23
+        },
+        {
+          "id": "t0-c0-fix",
+          "laneId": "c0-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 56,
+          "duration": 7
+        },
+        {
+          "id": "t0-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 63,
+          "duration": 7
+        },
+        {
+          "id": "t0-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 70,
+          "duration": 32
+        },
+        {
+          "id": "t0-c0-barrier",
+          "laneId": "c0-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "0",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 70,
+          "duration": 32
+        },
+        {
+          "id": "t0-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 3,
+          "duration": 2
+        },
+        {
+          "id": "t0-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 19,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c1-input",
+          "laneId": "c1-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 20,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c1-l0",
+          "laneId": "c1-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 31,
+          "duration": 5
+        },
+        {
+          "id": "t0-c1-cube",
+          "laneId": "c1-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 36,
+          "duration": 23
+        },
+        {
+          "id": "t0-c1-fix",
+          "laneId": "c1-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 59,
+          "duration": 7
+        },
+        {
+          "id": "t0-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 66,
+          "duration": 7
+        },
+        {
+          "id": "t0-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 73,
+          "duration": 32
+        },
+        {
+          "id": "t0-c1-barrier",
+          "laneId": "c1-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "1",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 73,
+          "duration": 32
+        },
+        {
+          "id": "t0-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 6,
+          "duration": 2
+        },
+        {
+          "id": "t0-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 9,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 22,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c2-input",
+          "laneId": "c2-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 23,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c2-l0",
+          "laneId": "c2-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 34,
+          "duration": 5
+        },
+        {
+          "id": "t0-c2-cube",
+          "laneId": "c2-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 39,
+          "duration": 23
+        },
+        {
+          "id": "t0-c2-fix",
+          "laneId": "c2-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 62,
+          "duration": 7
+        },
+        {
+          "id": "t0-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 69,
+          "duration": 7
+        },
+        {
+          "id": "t0-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 76,
+          "duration": 32
+        },
+        {
+          "id": "t0-c2-barrier",
+          "laneId": "c2-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "2",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 76,
+          "duration": 32
+        },
+        {
+          "id": "t0-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 9,
+          "duration": 2
+        },
+        {
+          "id": "t0-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 12,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t0-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 25,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t0-c3-input",
+          "laneId": "c3-c2",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "load input",
+          "kind": "transfer",
+          "start": 26,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t0-c3-l0",
+          "laneId": "c3-c1",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 37,
+          "duration": 5
+        },
+        {
+          "id": "t0-c3-cube",
+          "laneId": "c3-c",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 42,
+          "duration": 23
+        },
+        {
+          "id": "t0-c3-fix",
+          "laneId": "c3-f",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 65,
+          "duration": 7
+        },
+        {
+          "id": "t0-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 72,
+          "duration": 7
+        },
+        {
+          "id": "t0-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 79,
+          "duration": 32
+        },
+        {
+          "id": "t0-c3-barrier",
+          "laneId": "c3-s",
+          "kernelId": "matmul",
+          "taskId": "task0",
+          "blockId": "3",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 79,
+          "duration": 32
+        },
+        {
+          "id": "t1-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 111,
+          "duration": 2
+        },
+        {
+          "id": "t1-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 114,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 127,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c0-input",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 128,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "norm",
+          "kind": "compute",
+          "start": 139,
+          "duration": 13
+        },
+        {
+          "id": "t1-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 152,
+          "duration": 32
+        },
+        {
+          "id": "t1-c0-barrier",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "0",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 152,
+          "duration": 32
+        },
+        {
+          "id": "t1-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 114,
+          "duration": 2
+        },
+        {
+          "id": "t1-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 117,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 130,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c1-input",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 131,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "norm",
+          "kind": "compute",
+          "start": 142,
+          "duration": 13
+        },
+        {
+          "id": "t1-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 155,
+          "duration": 32
+        },
+        {
+          "id": "t1-c1-barrier",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "1",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 155,
+          "duration": 32
+        },
+        {
+          "id": "t1-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 117,
+          "duration": 2
+        },
+        {
+          "id": "t1-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 120,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 133,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c2-input",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 134,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "norm",
+          "kind": "compute",
+          "start": 145,
+          "duration": 13
+        },
+        {
+          "id": "t1-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 158,
+          "duration": 32
+        },
+        {
+          "id": "t1-c2-barrier",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "2",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 158,
+          "duration": 32
+        },
+        {
+          "id": "t1-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 120,
+          "duration": 2
+        },
+        {
+          "id": "t1-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 123,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 136,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t1-c3-input",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 137,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t1-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "norm",
+          "kind": "compute",
+          "start": 148,
+          "duration": 13
+        },
+        {
+          "id": "t1-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 161,
+          "duration": 32
+        },
+        {
+          "id": "t1-c3-barrier",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task1",
+          "blockId": "3",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 161,
+          "duration": 32
+        },
+        {
+          "id": "t2-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 193,
+          "duration": 2
+        },
+        {
+          "id": "t2-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 196,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 209,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c0-input",
+          "laneId": "c0-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 210,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "residual",
+          "kind": "compute",
+          "start": 221,
+          "duration": 13
+        },
+        {
+          "id": "t2-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 234,
+          "duration": 32
+        },
+        {
+          "id": "t2-c0-barrier",
+          "laneId": "c0-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "0",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 234,
+          "duration": 32
+        },
+        {
+          "id": "t2-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 196,
+          "duration": 2
+        },
+        {
+          "id": "t2-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 199,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 212,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c1-input",
+          "laneId": "c1-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 213,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "residual",
+          "kind": "compute",
+          "start": 224,
+          "duration": 13
+        },
+        {
+          "id": "t2-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 237,
+          "duration": 32
+        },
+        {
+          "id": "t2-c1-barrier",
+          "laneId": "c1-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "1",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 237,
+          "duration": 32
+        },
+        {
+          "id": "t2-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 199,
+          "duration": 2
+        },
+        {
+          "id": "t2-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 202,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 215,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c2-input",
+          "laneId": "c2-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 216,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "residual",
+          "kind": "compute",
+          "start": 227,
+          "duration": 13
+        },
+        {
+          "id": "t2-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 240,
+          "duration": 32
+        },
+        {
+          "id": "t2-c2-barrier",
+          "laneId": "c2-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "2",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 240,
+          "duration": 32
+        },
+        {
+          "id": "t2-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 202,
+          "duration": 2
+        },
+        {
+          "id": "t2-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 205,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 218,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t2-c3-input",
+          "laneId": "c3-v2",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 219,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t2-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "residual",
+          "kind": "compute",
+          "start": 230,
+          "duration": 13
+        },
+        {
+          "id": "t2-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 243,
+          "duration": 32
+        },
+        {
+          "id": "t2-c3-barrier",
+          "laneId": "c3-s",
+          "kernelId": "residual",
+          "taskId": "task2",
+          "blockId": "3",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 243,
+          "duration": 32
+        },
+        {
+          "id": "t3-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 275,
+          "duration": 2
+        },
+        {
+          "id": "t3-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 278,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 291,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c0-input",
+          "laneId": "c0-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 292,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "norm",
+          "kind": "compute",
+          "start": 303,
+          "duration": 13
+        },
+        {
+          "id": "t3-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 316,
+          "duration": 32
+        },
+        {
+          "id": "t3-c0-barrier",
+          "laneId": "c0-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "0",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 316,
+          "duration": 32
+        },
+        {
+          "id": "t3-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 278,
+          "duration": 2
+        },
+        {
+          "id": "t3-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 281,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 294,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c1-input",
+          "laneId": "c1-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 295,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "norm",
+          "kind": "compute",
+          "start": 306,
+          "duration": 13
+        },
+        {
+          "id": "t3-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 319,
+          "duration": 32
+        },
+        {
+          "id": "t3-c1-barrier",
+          "laneId": "c1-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "1",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 319,
+          "duration": 32
+        },
+        {
+          "id": "t3-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 281,
+          "duration": 2
+        },
+        {
+          "id": "t3-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 284,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 297,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c2-input",
+          "laneId": "c2-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 298,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "norm",
+          "kind": "compute",
+          "start": 309,
+          "duration": 13
+        },
+        {
+          "id": "t3-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 322,
+          "duration": 32
+        },
+        {
+          "id": "t3-c2-barrier",
+          "laneId": "c2-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "2",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 322,
+          "duration": 32
+        },
+        {
+          "id": "t3-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 284,
+          "duration": 2
+        },
+        {
+          "id": "t3-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 287,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 300,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t3-c3-input",
+          "laneId": "c3-v2",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 301,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t3-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "norm",
+          "kind": "compute",
+          "start": 312,
+          "duration": 13
+        },
+        {
+          "id": "t3-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 325,
+          "duration": 32
+        },
+        {
+          "id": "t3-c3-barrier",
+          "laneId": "c3-s",
+          "kernelId": "norm",
+          "taskId": "task3",
+          "blockId": "3",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 325,
+          "duration": 32
+        },
+        {
+          "id": "t4-c0-args",
+          "laneId": "c0-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 357,
+          "duration": 2
+        },
+        {
+          "id": "t4-c0-weight",
+          "laneId": "c0-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 360,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c0-wait",
+          "laneId": "c0-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 373,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c0-input",
+          "laneId": "c0-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 374,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c0-l0",
+          "laneId": "c0-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 385,
+          "duration": 5
+        },
+        {
+          "id": "t4-c0-cube",
+          "laneId": "c0-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 390,
+          "duration": 23
+        },
+        {
+          "id": "t4-c0-fix",
+          "laneId": "c0-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 413,
+          "duration": 7
+        },
+        {
+          "id": "t4-c0-vec",
+          "laneId": "c0-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "project",
+          "kind": "compute",
+          "start": 420,
+          "duration": 7
+        },
+        {
+          "id": "t4-c0-store",
+          "laneId": "c0-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 427,
+          "duration": 32
+        },
+        {
+          "id": "t4-c0-barrier",
+          "laneId": "c0-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "0",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 427,
+          "duration": 32
+        },
+        {
+          "id": "t4-c1-args",
+          "laneId": "c1-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 360,
+          "duration": 2
+        },
+        {
+          "id": "t4-c1-weight",
+          "laneId": "c1-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 363,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c1-wait",
+          "laneId": "c1-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 376,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c1-input",
+          "laneId": "c1-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 377,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c1-l0",
+          "laneId": "c1-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 388,
+          "duration": 5
+        },
+        {
+          "id": "t4-c1-cube",
+          "laneId": "c1-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 393,
+          "duration": 23
+        },
+        {
+          "id": "t4-c1-fix",
+          "laneId": "c1-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 416,
+          "duration": 7
+        },
+        {
+          "id": "t4-c1-vec",
+          "laneId": "c1-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "project",
+          "kind": "compute",
+          "start": 423,
+          "duration": 7
+        },
+        {
+          "id": "t4-c1-store",
+          "laneId": "c1-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 430,
+          "duration": 32
+        },
+        {
+          "id": "t4-c1-barrier",
+          "laneId": "c1-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "1",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 430,
+          "duration": 32
+        },
+        {
+          "id": "t4-c2-args",
+          "laneId": "c2-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 363,
+          "duration": 2
+        },
+        {
+          "id": "t4-c2-weight",
+          "laneId": "c2-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 366,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c2-wait",
+          "laneId": "c2-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 379,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c2-input",
+          "laneId": "c2-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 380,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c2-l0",
+          "laneId": "c2-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 391,
+          "duration": 5
+        },
+        {
+          "id": "t4-c2-cube",
+          "laneId": "c2-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 396,
+          "duration": 23
+        },
+        {
+          "id": "t4-c2-fix",
+          "laneId": "c2-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 419,
+          "duration": 7
+        },
+        {
+          "id": "t4-c2-vec",
+          "laneId": "c2-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "project",
+          "kind": "compute",
+          "start": 426,
+          "duration": 7
+        },
+        {
+          "id": "t4-c2-store",
+          "laneId": "c2-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 433,
+          "duration": 32
+        },
+        {
+          "id": "t4-c2-barrier",
+          "laneId": "c2-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "2",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 433,
+          "duration": 32
+        },
+        {
+          "id": "t4-c3-args",
+          "laneId": "c3-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "kernel args",
+          "kind": "transfer",
+          "start": 366,
+          "duration": 2
+        },
+        {
+          "id": "t4-c3-weight",
+          "laneId": "c3-v2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "load independent weight",
+          "kind": "transfer",
+          "start": 369,
+          "duration": 13,
+          "args": {
+            "dependency": "ready",
+            "source": "GM",
+            "destination": "UB"
+          }
+        },
+        {
+          "id": "t4-c3-wait",
+          "laneId": "c3-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "wait_prev_task_done",
+          "kind": "marker",
+          "start": 382,
+          "duration": 0,
+          "args": {
+            "scope": "all predecessor producers"
+          }
+        },
+        {
+          "id": "t4-c3-input",
+          "laneId": "c3-c2",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "load dependent input",
+          "kind": "transfer",
+          "start": 383,
+          "duration": 11,
+          "args": {
+            "source": "GM",
+            "destination": "L1"
+          }
+        },
+        {
+          "id": "t4-c3-l0",
+          "laneId": "c3-c1",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "L1 → L0A/B",
+          "kind": "transfer",
+          "start": 394,
+          "duration": 5
+        },
+        {
+          "id": "t4-c3-cube",
+          "laneId": "c3-c",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "matmul",
+          "kind": "compute",
+          "start": 399,
+          "duration": 23
+        },
+        {
+          "id": "t4-c3-fix",
+          "laneId": "c3-f",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "L0C → UB",
+          "kind": "transfer",
+          "start": 422,
+          "duration": 7
+        },
+        {
+          "id": "t4-c3-vec",
+          "laneId": "c3-v",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "project",
+          "kind": "compute",
+          "start": 429,
+          "duration": 7
+        },
+        {
+          "id": "t4-c3-store",
+          "laneId": "c3-v3",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "store output",
+          "kind": "transfer",
+          "start": 436,
+          "duration": 32
+        },
+        {
+          "id": "t4-c3-barrier",
+          "laneId": "c3-s",
+          "kernelId": "project",
+          "taskId": "task4",
+          "blockId": "3",
+          "name": "PIPE_BARRIER ALL",
+          "kind": "wait",
+          "start": 436,
+          "duration": 32
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "t0-c0-wait--t0-c0-input",
+          "from": "t0-c0-wait",
+          "to": "t0-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-input--t0-c0-l0",
+          "from": "t0-c0-input",
+          "to": "t0-c0-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-l0--t0-c0-cube",
+          "from": "t0-c0-l0",
+          "to": "t0-c0-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-cube--t0-c0-fix",
+          "from": "t0-c0-cube",
+          "to": "t0-c0-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-fix--t0-c0-vec",
+          "from": "t0-c0-fix",
+          "to": "t0-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-weight--t0-c0-vec",
+          "from": "t0-c0-weight",
+          "to": "t0-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c0-vec--t0-c0-store",
+          "from": "t0-c0-vec",
+          "to": "t0-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-wait--t0-c1-input",
+          "from": "t0-c1-wait",
+          "to": "t0-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c1-input--t0-c1-l0",
+          "from": "t0-c1-input",
+          "to": "t0-c1-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-l0--t0-c1-cube",
+          "from": "t0-c1-l0",
+          "to": "t0-c1-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-cube--t0-c1-fix",
+          "from": "t0-c1-cube",
+          "to": "t0-c1-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-fix--t0-c1-vec",
+          "from": "t0-c1-fix",
+          "to": "t0-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-weight--t0-c1-vec",
+          "from": "t0-c1-weight",
+          "to": "t0-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c1-vec--t0-c1-store",
+          "from": "t0-c1-vec",
+          "to": "t0-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-wait--t0-c2-input",
+          "from": "t0-c2-wait",
+          "to": "t0-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c2-input--t0-c2-l0",
+          "from": "t0-c2-input",
+          "to": "t0-c2-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-l0--t0-c2-cube",
+          "from": "t0-c2-l0",
+          "to": "t0-c2-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-cube--t0-c2-fix",
+          "from": "t0-c2-cube",
+          "to": "t0-c2-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-fix--t0-c2-vec",
+          "from": "t0-c2-fix",
+          "to": "t0-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-weight--t0-c2-vec",
+          "from": "t0-c2-weight",
+          "to": "t0-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c2-vec--t0-c2-store",
+          "from": "t0-c2-vec",
+          "to": "t0-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-wait--t0-c3-input",
+          "from": "t0-c3-wait",
+          "to": "t0-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c3-input--t0-c3-l0",
+          "from": "t0-c3-input",
+          "to": "t0-c3-l0",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-l0--t0-c3-cube",
+          "from": "t0-c3-l0",
+          "to": "t0-c3-cube",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-cube--t0-c3-fix",
+          "from": "t0-c3-cube",
+          "to": "t0-c3-fix",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-fix--t0-c3-vec",
+          "from": "t0-c3-fix",
+          "to": "t0-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-weight--t0-c3-vec",
+          "from": "t0-c3-weight",
+          "to": "t0-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t0-c3-vec--t0-c3-store",
+          "from": "t0-c3-vec",
+          "to": "t0-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-wait--t1-c0-input",
+          "from": "t1-c0-wait",
+          "to": "t1-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c0-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c0-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c0-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c0-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c0-input--t1-c0-vec",
+          "from": "t1-c0-input",
+          "to": "t1-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-weight--t1-c0-vec",
+          "from": "t1-c0-weight",
+          "to": "t1-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c0-vec--t1-c0-store",
+          "from": "t1-c0-vec",
+          "to": "t1-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-wait--t1-c1-input",
+          "from": "t1-c1-wait",
+          "to": "t1-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c1-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c1-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c1-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c1-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-input--t1-c1-vec",
+          "from": "t1-c1-input",
+          "to": "t1-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-weight--t1-c1-vec",
+          "from": "t1-c1-weight",
+          "to": "t1-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c1-vec--t1-c1-store",
+          "from": "t1-c1-vec",
+          "to": "t1-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c2-wait--t1-c2-input",
+          "from": "t1-c2-wait",
+          "to": "t1-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c2-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c2-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c2-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c2-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-input--t1-c2-vec",
+          "from": "t1-c2-input",
+          "to": "t1-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c2-weight--t1-c2-vec",
+          "from": "t1-c2-weight",
+          "to": "t1-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c2-vec--t1-c2-store",
+          "from": "t1-c2-vec",
+          "to": "t1-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t1-c3-wait--t1-c3-input",
+          "from": "t1-c3-wait",
+          "to": "t1-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t0-c0-store--t1-c3-wait",
+          "from": "t0-c0-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c1-store--t1-c3-wait",
+          "from": "t0-c1-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c2-store--t1-c3-wait",
+          "from": "t0-c2-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t0-c3-store--t1-c3-wait",
+          "from": "t0-c3-store",
+          "to": "t1-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-input--t1-c3-vec",
+          "from": "t1-c3-input",
+          "to": "t1-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c3-weight--t1-c3-vec",
+          "from": "t1-c3-weight",
+          "to": "t1-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t1-c3-vec--t1-c3-store",
+          "from": "t1-c3-vec",
+          "to": "t1-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-wait--t2-c0-input",
+          "from": "t2-c0-wait",
+          "to": "t2-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c0-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c0-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c0-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c0-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c0-input--t2-c0-vec",
+          "from": "t2-c0-input",
+          "to": "t2-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-weight--t2-c0-vec",
+          "from": "t2-c0-weight",
+          "to": "t2-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c0-vec--t2-c0-store",
+          "from": "t2-c0-vec",
+          "to": "t2-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-wait--t2-c1-input",
+          "from": "t2-c1-wait",
+          "to": "t2-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c1-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c1-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c1-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c1-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-input--t2-c1-vec",
+          "from": "t2-c1-input",
+          "to": "t2-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-weight--t2-c1-vec",
+          "from": "t2-c1-weight",
+          "to": "t2-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c1-vec--t2-c1-store",
+          "from": "t2-c1-vec",
+          "to": "t2-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c2-wait--t2-c2-input",
+          "from": "t2-c2-wait",
+          "to": "t2-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c2-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c2-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c2-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c2-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-input--t2-c2-vec",
+          "from": "t2-c2-input",
+          "to": "t2-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c2-weight--t2-c2-vec",
+          "from": "t2-c2-weight",
+          "to": "t2-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c2-vec--t2-c2-store",
+          "from": "t2-c2-vec",
+          "to": "t2-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t2-c3-wait--t2-c3-input",
+          "from": "t2-c3-wait",
+          "to": "t2-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t1-c0-store--t2-c3-wait",
+          "from": "t1-c0-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c1-store--t2-c3-wait",
+          "from": "t1-c1-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c2-store--t2-c3-wait",
+          "from": "t1-c2-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t1-c3-store--t2-c3-wait",
+          "from": "t1-c3-store",
+          "to": "t2-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-input--t2-c3-vec",
+          "from": "t2-c3-input",
+          "to": "t2-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c3-weight--t2-c3-vec",
+          "from": "t2-c3-weight",
+          "to": "t2-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t2-c3-vec--t2-c3-store",
+          "from": "t2-c3-vec",
+          "to": "t2-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c0-wait--t3-c0-input",
+          "from": "t3-c0-wait",
+          "to": "t3-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c0-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c0-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c0-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c0-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c0-input--t3-c0-vec",
+          "from": "t3-c0-input",
+          "to": "t3-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c0-weight--t3-c0-vec",
+          "from": "t3-c0-weight",
+          "to": "t3-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c0-vec--t3-c0-store",
+          "from": "t3-c0-vec",
+          "to": "t3-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c1-wait--t3-c1-input",
+          "from": "t3-c1-wait",
+          "to": "t3-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c1-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c1-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c1-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c1-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-input--t3-c1-vec",
+          "from": "t3-c1-input",
+          "to": "t3-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c1-weight--t3-c1-vec",
+          "from": "t3-c1-weight",
+          "to": "t3-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c1-vec--t3-c1-store",
+          "from": "t3-c1-vec",
+          "to": "t3-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c2-wait--t3-c2-input",
+          "from": "t3-c2-wait",
+          "to": "t3-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c2-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c2-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c2-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c2-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-input--t3-c2-vec",
+          "from": "t3-c2-input",
+          "to": "t3-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c2-weight--t3-c2-vec",
+          "from": "t3-c2-weight",
+          "to": "t3-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c2-vec--t3-c2-store",
+          "from": "t3-c2-vec",
+          "to": "t3-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t3-c3-wait--t3-c3-input",
+          "from": "t3-c3-wait",
+          "to": "t3-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t2-c0-store--t3-c3-wait",
+          "from": "t2-c0-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c1-store--t3-c3-wait",
+          "from": "t2-c1-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c2-store--t3-c3-wait",
+          "from": "t2-c2-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t2-c3-store--t3-c3-wait",
+          "from": "t2-c3-store",
+          "to": "t3-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-input--t3-c3-vec",
+          "from": "t3-c3-input",
+          "to": "t3-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c3-weight--t3-c3-vec",
+          "from": "t3-c3-weight",
+          "to": "t3-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t3-c3-vec--t3-c3-store",
+          "from": "t3-c3-vec",
+          "to": "t3-c3-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-wait--t4-c0-input",
+          "from": "t4-c0-wait",
+          "to": "t4-c0-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c0-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c0-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c0-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c0-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c0-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c0-input--t4-c0-l0",
+          "from": "t4-c0-input",
+          "to": "t4-c0-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-l0--t4-c0-cube",
+          "from": "t4-c0-l0",
+          "to": "t4-c0-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-cube--t4-c0-fix",
+          "from": "t4-c0-cube",
+          "to": "t4-c0-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-fix--t4-c0-vec",
+          "from": "t4-c0-fix",
+          "to": "t4-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-weight--t4-c0-vec",
+          "from": "t4-c0-weight",
+          "to": "t4-c0-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c0-vec--t4-c0-store",
+          "from": "t4-c0-vec",
+          "to": "t4-c0-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-wait--t4-c1-input",
+          "from": "t4-c1-wait",
+          "to": "t4-c1-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c1-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c1-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c1-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c1-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c1-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c1-input--t4-c1-l0",
+          "from": "t4-c1-input",
+          "to": "t4-c1-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-l0--t4-c1-cube",
+          "from": "t4-c1-l0",
+          "to": "t4-c1-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-cube--t4-c1-fix",
+          "from": "t4-c1-cube",
+          "to": "t4-c1-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-fix--t4-c1-vec",
+          "from": "t4-c1-fix",
+          "to": "t4-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-weight--t4-c1-vec",
+          "from": "t4-c1-weight",
+          "to": "t4-c1-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c1-vec--t4-c1-store",
+          "from": "t4-c1-vec",
+          "to": "t4-c1-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-wait--t4-c2-input",
+          "from": "t4-c2-wait",
+          "to": "t4-c2-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c2-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c2-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c2-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c2-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c2-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c2-input--t4-c2-l0",
+          "from": "t4-c2-input",
+          "to": "t4-c2-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-l0--t4-c2-cube",
+          "from": "t4-c2-l0",
+          "to": "t4-c2-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-cube--t4-c2-fix",
+          "from": "t4-c2-cube",
+          "to": "t4-c2-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-fix--t4-c2-vec",
+          "from": "t4-c2-fix",
+          "to": "t4-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-weight--t4-c2-vec",
+          "from": "t4-c2-weight",
+          "to": "t4-c2-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c2-vec--t4-c2-store",
+          "from": "t4-c2-vec",
+          "to": "t4-c2-store",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-wait--t4-c3-input",
+          "from": "t4-c3-wait",
+          "to": "t4-c3-input",
+          "type": "sync"
+        },
+        {
+          "id": "t3-c0-store--t4-c3-wait",
+          "from": "t3-c0-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c1-store--t4-c3-wait",
+          "from": "t3-c1-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c2-store--t4-c3-wait",
+          "from": "t3-c2-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t3-c3-store--t4-c3-wait",
+          "from": "t3-c3-store",
+          "to": "t4-c3-wait",
+          "type": "sync",
+          "toAnchor": "end"
+        },
+        {
+          "id": "t4-c3-input--t4-c3-l0",
+          "from": "t4-c3-input",
+          "to": "t4-c3-l0",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-l0--t4-c3-cube",
+          "from": "t4-c3-l0",
+          "to": "t4-c3-cube",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-cube--t4-c3-fix",
+          "from": "t4-c3-cube",
+          "to": "t4-c3-fix",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-fix--t4-c3-vec",
+          "from": "t4-c3-fix",
+          "to": "t4-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-weight--t4-c3-vec",
+          "from": "t4-c3-weight",
+          "to": "t4-c3-vec",
+          "type": "data"
+        },
+        {
+          "id": "t4-c3-vec--t4-c3-store",
+          "from": "t4-c3-vec",
+          "to": "t4-c3-store",
+          "type": "data"
+        }
+      ],
+      "regions": []
+    }
+  ]
+}
