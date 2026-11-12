@@ -40,6 +40,7 @@ const source = read('client.js');
 assert.ok(!/^\s*import\s/m.test(source), 'client.js must not contain ESM imports');
 assert.match(source, /window\.__ModuleLoader__\.load\(/);
 assert.match(source, /customElements\.define\('pipe-timeline'/);
+assert.match(source, /const esc = escapeHtml;/, 'aliased imports are re-declared');
 assert.match(source, /id: '@local\/dsh-pipe-atlas'/);
 
 let registration = null;

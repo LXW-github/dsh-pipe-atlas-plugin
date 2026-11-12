@@ -23,8 +23,20 @@ const DEMO_FILES = {
   minimal: 'minimal.json',
 };
 
+const IMPORT_RE = /^import\s*\{([^}]*)\}\s*from\s*['"][^'"]+['"];?[ \t]*$/gm;
+const aliasDeclarations = new Set();
+
 function vendorSource(file) {
-  const source = read(`vendor/${file}`)
+  const raw = read(`vendor/${file}`);
+  // The vendor modules are concatenated into one scope, so aliased imports
+  // (`escapeHtml as esc`) must be re-declared explicitly.
+  for (const match of raw.matchAll(IMPORT_RE)) {
+    for (const specifier of match[1].split(',')) {
+      const [imported, local] = specifier.trim().split(/\s+as\s+/);
+      if (local) aliasDeclarations.add(`const ${local} = ${imported};`);
+    }
+  }
+  const source = raw
     .replace(/^import\s[^;]*;\s*$/gm, '')
     .replace(/^export\s+/gm, '');
   if (/^\s*(import|export)\s/m.test(source)) {
@@ -39,7 +51,12 @@ for (const [id, file] of Object.entries(DEMO_FILES)) {
 }
 
 const app = read('src/app.js');
-const vendor = VENDOR_FILES.map((file) => `// ---- vendor/${file} ----\n${vendorSource(file)}`).join('\n\n');
+const vendorParts = VENDOR_FILES.map((file) => `// ---- vendor/${file} ----\n${vendorSource(file)}`);
+// Keep aliases after the modules that define them but before the component
+// that consumes them, so an element upgrade can never hit a TDZ.
+const aliases = [...aliasDeclarations].join('\n');
+vendorParts.splice(vendorParts.length - 1, 0, `// ---- aliased imports ----\n${aliases}`);
+const vendor = vendorParts.join('\n\n');
 const demoJson = JSON.stringify(demos);
 
 // `locale/*.json` also carries Plugin Manager display metadata. Only the flat

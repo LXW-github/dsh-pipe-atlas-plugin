@@ -11,6 +11,7 @@ The panel uses the Harness theme tokens; the timeline keeps Pipe Atlas's own lig
 ## Features
 
 - **Sidebar entry** — a dedicated icon in `sidebar.panellist`; clicking it opens the panel in the main column, next to Notes, Schedules and Plugins.
+- **Original workspace shell** — the dark demo rail, breadcrumb top bar, page heading, dataset strip and footer are rebuilt inside the panel, so the viewer keeps the layout of the standalone Pipe Atlas app while the viewer itself stays pixel-identical to upstream.
 - **Three bundled traces plus a minimal sample** — shared scheduling → fetch → execute, a five-task / four-core network trace, the original Early Start demo, and a minimal three-stage pipeline.
 - **Import** — drag a `.json` file anywhere onto the panel, use *Open JSON*, or paste JSON into the dialog. Supports the Pipe Atlas v1.0–v1.2 contract and Chrome Trace Event JSON; files up to 30 MB.
 - **Inspect** — core multi-select, scenario switch, task/kernel filters, search, pan/zoom/measure, dependency lines, scheduling and fetch details, overlap analysis, per-pipe activity.
@@ -68,7 +69,7 @@ See the upstream `docs/data-contract.md` and `docs/integration.md` for the compl
 
 ## Build
 
-`client.js` is generated. The Harness client runner loads one plain-JS factory, while Pipe Atlas ships ES modules, so `scripts/build-client.mjs` strips module syntax from the vendor files, concatenates them in dependency order, embeds the demo traces and locale dictionaries, and wraps everything in `window.__ModuleLoader__.load(...)`.
+`client.js` is generated. The Harness client runner loads one plain-JS factory, while Pipe Atlas ships ES modules, so `scripts/build-client.mjs` strips module syntax from the vendor files, concatenates them in dependency order, re-declares aliased imports (`escapeHtml as esc`), embeds the demo traces and locale dictionaries, and wraps everything in `window.__ModuleLoader__.load(...)`. The alias step matters: without it the concatenated module throws `esc is not defined` on the first render.
 
 ```bash
 npm run build   # regenerate client.js from src/app.js + vendor/
