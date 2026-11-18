@@ -1,0 +1,440 @@
+{
+  "schemaVersion": "1.3",
+  "metadata": {
+    "title": "Outstanding 指令 · MTE2 4 槽 / MTE3 2 槽",
+    "timeUnit": "us",
+    "device": "NPU 0 · Core 0",
+    "source": {
+      "kind": "synthetic"
+    },
+    "description": "Two tasks whose DMA queues keep four MTE2 and two MTE3 instructions outstanding. Execution windows are short; issue → complete windows overlap, so one pipe needs several rows."
+  },
+  "devices": [
+    {
+      "id": "npu0",
+      "label": "NPU 0"
+    }
+  ],
+  "cores": [
+    {
+      "id": "core-0",
+      "label": "Core 0",
+      "deviceId": "npu0",
+      "cubeId": "cube-0",
+      "vectorId": "vector-0"
+    }
+  ],
+  "lanes": [
+    {
+      "id": "c0-mte2",
+      "label": "MTE2",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE2",
+      "issueWidth": 4
+    },
+    {
+      "id": "c0-v",
+      "label": "VECTOR",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "VECTOR"
+    },
+    {
+      "id": "c0-mte3",
+      "label": "MTE3",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "MTE3",
+      "issueWidth": 2
+    }
+  ],
+  "kernels": [
+    {
+      "id": "kernel-matmul-add",
+      "label": "matmul_add"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task0",
+      "label": "T0 · matmul_add",
+      "kernelId": "kernel-matmul-add",
+      "dependsOn": []
+    },
+    {
+      "id": "task1",
+      "label": "T1 · matmul_add",
+      "kernelId": "kernel-matmul-add",
+      "dependsOn": [
+        "task0"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "outstanding",
+      "label": "Outstanding",
+      "events": [
+        {
+          "id": "task0-c0-mte2-0",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile0",
+          "kind": "transfer",
+          "start": 0.2,
+          "duration": 4.5,
+          "issue": 0.0,
+          "complete": 9.0,
+          "args": {
+            "tile": 0,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task0-c0-mte2-1",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile1",
+          "kind": "transfer",
+          "start": 2.4,
+          "duration": 4.5,
+          "issue": 2.2,
+          "complete": 11.2,
+          "args": {
+            "tile": 1,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task0-c0-mte2-2",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile2",
+          "kind": "transfer",
+          "start": 4.6,
+          "duration": 4.5,
+          "issue": 4.4,
+          "complete": 13.4,
+          "args": {
+            "tile": 2,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task0-c0-mte2-3",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile3",
+          "kind": "transfer",
+          "start": 6.8,
+          "duration": 4.5,
+          "issue": 6.6,
+          "complete": 15.6,
+          "args": {
+            "tile": 3,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task0-vec-0",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-v",
+          "name": "vector mad",
+          "kind": "compute",
+          "start": 10.0,
+          "duration": 3.5,
+          "args": {
+            "tile": 0
+          }
+        },
+        {
+          "id": "task0-vec-1",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-v",
+          "name": "vector mad",
+          "kind": "compute",
+          "start": 14.0,
+          "duration": 3.5,
+          "args": {
+            "tile": 1
+          }
+        },
+        {
+          "id": "task0-vec-2",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-v",
+          "name": "vector mad",
+          "kind": "compute",
+          "start": 18.0,
+          "duration": 3.5,
+          "args": {
+            "tile": 2
+          }
+        },
+        {
+          "id": "task0-store-0",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte3",
+          "name": "l0c_to_gm tile0",
+          "kind": "transfer",
+          "start": 14.3,
+          "duration": 3,
+          "issue": 14.0,
+          "complete": 20.0,
+          "args": {
+            "tile": 0,
+            "bytes": 16384,
+            "queue": "MTE3"
+          }
+        },
+        {
+          "id": "task0-store-1",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte3",
+          "name": "l0c_to_gm tile1",
+          "kind": "transfer",
+          "start": 19.3,
+          "duration": 3,
+          "issue": 19.0,
+          "complete": 25.0,
+          "args": {
+            "tile": 1,
+            "bytes": 16384,
+            "queue": "MTE3"
+          }
+        },
+        {
+          "id": "task0-store-2",
+          "taskId": "task0",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte3",
+          "name": "l0c_to_gm tile2",
+          "kind": "transfer",
+          "start": 24.3,
+          "duration": 3,
+          "issue": 24.0,
+          "complete": 30.0,
+          "args": {
+            "tile": 2,
+            "bytes": 16384,
+            "queue": "MTE3"
+          }
+        },
+        {
+          "id": "task1-c0-mte2-0",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile0",
+          "kind": "transfer",
+          "start": 32.2,
+          "duration": 4.5,
+          "issue": 32.0,
+          "complete": 41.0,
+          "args": {
+            "tile": 0,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task1-c0-mte2-1",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile1",
+          "kind": "transfer",
+          "start": 34.4,
+          "duration": 4.5,
+          "issue": 34.2,
+          "complete": 43.2,
+          "args": {
+            "tile": 1,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task1-c0-mte2-2",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile2",
+          "kind": "transfer",
+          "start": 36.6,
+          "duration": 4.5,
+          "issue": 36.4,
+          "complete": 45.4,
+          "args": {
+            "tile": 2,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task1-c0-mte2-3",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte2",
+          "name": "gm_to_l1 tile3",
+          "kind": "transfer",
+          "start": 38.8,
+          "duration": 4.5,
+          "issue": 38.6,
+          "complete": 47.6,
+          "args": {
+            "tile": 3,
+            "bytes": 16384,
+            "queue": "MTE2"
+          }
+        },
+        {
+          "id": "task1-vec-0",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-v",
+          "name": "vector mad",
+          "kind": "compute",
+          "start": 42.0,
+          "duration": 3.5,
+          "args": {
+            "tile": 0
+          }
+        },
+        {
+          "id": "task1-vec-1",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-v",
+          "name": "vector mad",
+          "kind": "compute",
+          "start": 46.0,
+          "duration": 3.5,
+          "args": {
+            "tile": 1
+          }
+        },
+        {
+          "id": "task1-vec-2",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-v",
+          "name": "vector mad",
+          "kind": "compute",
+          "start": 50.0,
+          "duration": 3.5,
+          "args": {
+            "tile": 2
+          }
+        },
+        {
+          "id": "task1-store-0",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte3",
+          "name": "l0c_to_gm tile0",
+          "kind": "transfer",
+          "start": 46.3,
+          "duration": 3,
+          "issue": 46.0,
+          "complete": 52.0,
+          "args": {
+            "tile": 0,
+            "bytes": 16384,
+            "queue": "MTE3"
+          }
+        },
+        {
+          "id": "task1-store-1",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte3",
+          "name": "l0c_to_gm tile1",
+          "kind": "transfer",
+          "start": 51.3,
+          "duration": 3,
+          "issue": 51.0,
+          "complete": 57.0,
+          "args": {
+            "tile": 1,
+            "bytes": 16384,
+            "queue": "MTE3"
+          }
+        },
+        {
+          "id": "task1-store-2",
+          "taskId": "task1",
+          "kernelId": "kernel-matmul-add",
+          "laneId": "c0-mte3",
+          "name": "l0c_to_gm tile2",
+          "kind": "transfer",
+          "start": 56.3,
+          "duration": 3,
+          "issue": 56.0,
+          "complete": 62.0,
+          "args": {
+            "tile": 2,
+            "bytes": 16384,
+            "queue": "MTE3"
+          }
+        }
+      ],
+      "dependencies": [
+        {
+          "id": "d1",
+          "from": "task0-c0-mte2-0",
+          "to": "task0-vec-0",
+          "type": "data",
+          "fromAnchor": "end",
+          "toAnchor": "start"
+        },
+        {
+          "id": "d2",
+          "from": "task0-c0-mte2-1",
+          "to": "task0-vec-1",
+          "type": "data",
+          "fromAnchor": "end",
+          "toAnchor": "start"
+        },
+        {
+          "id": "d3",
+          "from": "task0-vec-0",
+          "to": "task0-store-0",
+          "type": "data",
+          "fromAnchor": "end",
+          "toAnchor": "start"
+        },
+        {
+          "id": "d4",
+          "from": "task1-c0-mte2-0",
+          "to": "task1-vec-0",
+          "type": "data",
+          "fromAnchor": "end",
+          "toAnchor": "start"
+        },
+        {
+          "id": "d5",
+          "from": "task1-vec-0",
+          "to": "task1-store-0",
+          "type": "data",
+          "fromAnchor": "end",
+          "toAnchor": "start"
+        }
+      ]
+    }
+  ]
+}

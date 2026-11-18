@@ -24,6 +24,8 @@
   "demo.network.note": "5 tasks · 4 physical cores · overlap",
   "demo.earlyStart": "MIX · Early Start",
   "demo.earlyStart.note": "Cross-task transfer overlap",
+  "demo.outstanding": "Outstanding · MTE2 4 slots",
+  "demo.outstanding.note": "Issue → complete windows · one pipe, many rows",
   "demo.minimal": "Vector Pipeline",
   "demo.minimal.note": "Minimal three-stage pipeline",
   "dataset.synthetic": "SYNTHETIC DEMO",

@@ -24,6 +24,8 @@
   "demo.network.note": "5 Tasks · 4 物理核 · Overlap",
   "demo.earlyStart": "MIX · Early Start",
   "demo.earlyStart.note": "跨任务搬运重叠",
+  "demo.outstanding": "Outstanding · MTE2 4 槽",
+  "demo.outstanding.note": "Issue → complete 区间 · 单 Pipe 多行",
   "demo.minimal": "Vector Pipeline",
   "demo.minimal.note": "最小三段流水",
   "dataset.synthetic": "SYNTHETIC DEMO",

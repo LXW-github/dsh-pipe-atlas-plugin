@@ -15,7 +15,7 @@ export function normalizeTrace(input) {
   if (!object(input)) return input;
   const document = structuredClone(input);
   const missingName = value => value == null || (typeof value === 'string' && !value.trim());
-  if (document.schemaVersion === '1.2' && Array.isArray(document.tasks)) {
+  if (['1.2', '1.3'].includes(document.schemaVersion) && Array.isArray(document.tasks)) {
     const omittedKernels = document.kernels === undefined;
     if (omittedKernels) document.kernels = [];
     if (Array.isArray(document.kernels)) {
@@ -40,6 +40,15 @@ export function normalizeTrace(input) {
       }
     }
   }
+  if (document.schemaVersion === '1.3' && Array.isArray(document.scenarios)) for (const scenario of document.scenarios.filter(object)) {
+    if (!Array.isArray(scenario.events)) continue;
+    for (const event of scenario.events.filter(object)) {
+      // Outstanding-only traces may omit the execution window: it defaults to
+      // the in-flight window, so upstream tools never write the same span twice.
+      if (event.start === undefined && time(event.issue)) event.start = event.issue;
+      if (event.duration === undefined && time(event.start) && time(event.complete)) event.duration = event.complete - event.start;
+    }
+  }
   if (Array.isArray(document.kernels)) {
     const labels = new Set(document.kernels.filter(object).map(k => k.label).filter(string));
     let index = 0;
@@ -58,8 +67,8 @@ function validateNormalizedTrace(input) {
   const errors = [], warnings = [];
   const fail = (path, message) => errors.push(`${path}: ${message}`);
   if (!object(input)) return { errors: ['$: expected a JSON object'], warnings };
-  if (!['1.0', '1.1', '1.2'].includes(input.schemaVersion)) fail('schemaVersion', 'expected "1.0", "1.1" or "1.2"');
-  const network = ['1.1', '1.2'].includes(input.schemaVersion), scheduling = input.schemaVersion === '1.2';
+  if (!['1.0', '1.1', '1.2', '1.3'].includes(input.schemaVersion)) fail('schemaVersion', 'expected "1.0", "1.1", "1.2" or "1.3"');
+  const network = ['1.1', '1.2', '1.3'].includes(input.schemaVersion), scheduling = ['1.2', '1.3'].includes(input.schemaVersion);
   const eventKinds = scheduling ? [...kinds, 'schedule', 'fetch'] : kinds;
   const meta = input.metadata;
   if (!object(meta)) fail('metadata', 'expected an object');
@@ -124,6 +133,7 @@ function validateNormalizedTrace(input) {
     if (lane.role !== undefined && !['execution', 'schedule', 'fetch'].includes(lane.role)) fail(`lanes.${id}.role`, 'expected execution, schedule or fetch');
     if (scheduling && lane.engine === 'SCHEDULER' && lane.role !== undefined && lane.role !== 'schedule') fail(`lanes.${id}.role`, 'SCHEDULER lanes have role schedule');
     if (scheduling && lane.role === 'schedule' && lane.engine !== 'SCHEDULER') fail(`lanes.${id}.engine`, 'role schedule requires engine SCHEDULER');
+    if (lane.issueWidth !== undefined && (!Number.isSafeInteger(lane.issueWidth) || lane.issueWidth < 1 || lane.issueWidth > 1024)) fail(`lanes.${id}.issueWidth`, 'expected an integer between 1 and 1024');
   }
   for (const [scenarioId, scenario] of lists.scenarios) {
     const base = `scenarios.${scenarioId}`;
@@ -149,6 +159,14 @@ function validateNormalizedTrace(input) {
       if (time(event.start) && time(event.duration) && !time(event.start + event.duration)) fail(path, 'end time exceeds safe numeric range');
       if (event.kind === 'marker' && event.duration !== 0) fail(`${path}.duration`, 'a marker must have duration 0');
       if (!['marker', 'fetch'].includes(event.kind) && event.duration === 0) fail(`${path}.duration`, 'an interval must have positive duration');
+      for (const field of ['issue', 'complete']) {
+        if (event[field] === undefined) continue;
+        if (!time(event[field])) { fail(`${path}.${field}`, 'expected a finite, nonnegative, safe number'); continue; }
+        if (field === 'issue' && time(event.start) && event[field] > event.start) fail(`${path}.issue`, 'must not be later than start');
+        if (field === 'complete' && time(event.start) && time(event.duration) && event[field] < event.start + event.duration) fail(`${path}.complete`, 'must not be earlier than start + duration');
+      }
+      if (time(event.issue) && time(event.complete) && event.complete <= event.issue) fail(path, 'complete must be later than issue');
+      if (event.issue !== undefined && event.complete === undefined && event.kind !== 'marker') warnings.push(`${path}: issue without complete; the outstanding window ends with the execution`);
       if (event.args !== undefined && !object(event.args)) fail(`${path}.args`, 'expected an object');
       for (const field of ['taskId', 'blockId']) if (event[field] !== undefined && typeof event[field] !== 'string') fail(`${path}.${field}`, 'expected a string');
       if (event.iteration !== undefined && (!Number.isSafeInteger(event.iteration) || event.iteration < 0)) fail(`${path}.iteration`, 'expected a nonnegative integer');
@@ -160,6 +178,22 @@ function validateNormalizedTrace(input) {
         }
       }
     });
+    const laneWindows = new Map();
+    for (const event of events.values()) {
+      if (event.issue === undefined && event.complete === undefined) continue;
+      if (!time(event.start)) continue;
+      const [from, to] = outstandingWindow(event);
+      if (!laneWindows.has(event.laneId)) laneWindows.set(event.laneId, []);
+      laneWindows.get(event.laneId).push([from, to]);
+    }
+    for (const [laneId, windows] of laneWindows) {
+      const width = lists.lanes.get(laneId)?.issueWidth;
+      if (width === undefined) continue;
+      const points = windows.flatMap(([from, to]) => [[from, 1], [to, -1]]).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      let current = 0, peak = 0;
+      for (const [, delta] of points) { current += delta; peak = Math.max(peak, current); }
+      if (peak > width) warnings.push(`${base}.events: lane ${laneId} has ${peak} outstanding instructions but issueWidth is ${width}`);
+    }
     if (scheduling) for (const [id, event] of events) {
       const path = `${base}.events.${id}`, lane = lists.lanes.get(event.laneId);
       if (event.kind === 'schedule') {
@@ -286,7 +320,7 @@ export function phaseStats(events) {
 }
 
 export function traceTasks(document) {
-  return ['1.1', '1.2'].includes(document.schemaVersion) ? document.tasks : document.kernels.map((kernel, i) => ({ id: kernel.id, label: `task${i}`, kernelId: kernel.id, color: kernel.color, inferred: true }));
+  return ['1.1', '1.2', '1.3'].includes(document.schemaVersion) ? document.tasks : document.kernels.map((kernel, i) => ({ id: kernel.id, label: `task${i}`, kernelId: kernel.id, color: kernel.color, inferred: true }));
 }
 
 export function taskSummaries(events, tasks) {
@@ -345,21 +379,87 @@ export function traceStats(events, lanes, regions = []) {
   return { start, end, duration, activeRate: duration && executionLanes.length ? busy / (duration * executionLanes.length) : 0, overlap, count: events.length, laneBusy };
 }
 
-export function layoutEvents(events) {
-  const positions = new Map(), laneDepth = new Map(), perLane = new Map();
+/**
+ * Pack a pipe's events into rows (visual tracks inside one lane).
+ *
+ * `mode` decides what owns a row group:
+ * - `overlap` (default): one group, rows grow only where events overlap in time.
+ * - `task` / `kernel`: every task (or kernel) gets its own row block, so a pipe
+ *   that executes three tasks shows three rows even when they never overlap.
+ *
+ * Inside a group, events are packed first-fit by start time, so a long group
+ * still splits into extra rows when two of its events really overlap.
+ *
+ * @param {Array} events - scenario events, all lanes.
+ * @param {{mode?: 'overlap'|'task'|'kernel'}} [options]
+ * @returns {{positions: Map<string, number>, laneDepth: Map<string, number>,
+ *   rowInfo: Map<string, Array<{index: number, key: string, mode: string,
+ *   count: number, start: number, end: number}>>}}
+ */
+/**
+ * The in-flight window of one event: from the moment the pipe accepts the
+ * instruction (`issue`) to the moment it retires it (`complete`). Both fields
+ * are optional; without them the execution window is the outstanding window.
+ *
+ * @param {{start: number, duration: number, issue?: number, complete?: number}} event
+ * @returns {[number, number]}
+ */
+export function outstandingWindow(event) {
+  const from = event.issue === undefined ? event.start : Math.min(event.issue, event.start);
+  const to = event.complete === undefined ? event.start + event.duration : Math.max(event.complete, event.start + event.duration);
+  return [from, to];
+}
+
+/**
+ * Pack events into the rows a pipe needs.
+ *
+ * A pipe can keep several instructions outstanding at once, so rows are packed
+ * by the outstanding window rather than by execution time: two instructions
+ * whose lifetimes overlap occupy different rows even when their execution does
+ * not. `options.capacity` pads the rows up to a lane's declared `issueWidth`,
+ * so idle slots stay visible; a lane without outstanding data keeps one row.
+ *
+ * @param {Array} events - scenario events.
+ * @param {{capacity?: Map<string, number>}} [options]
+ * @returns {{positions: Map<string, number>, laneDepth: Map<string, number>,
+ *   rowInfo: Map<string, Array<{index: number, count: number, idle: boolean,
+ *   start: number|null, end: number|null}>>}}
+ */
+export function layoutEvents(events, options = {}) {
+  const capacity = options.capacity;
+  const positions = new Map(), laneDepth = new Map(), rowInfo = new Map(), perLane = new Map();
   for (const event of events) { if (!perLane.has(event.laneId)) perLane.set(event.laneId, []); perLane.get(event.laneId).push(event); }
   for (const [laneId, list] of perLane) {
-    const ends = [];
-    for (const event of [...list].sort((a, b) => a.start - b.start || b.duration - a.duration)) {
-      if (event.kind === 'marker') { positions.set(event.id, 0); continue; }
-      let level = ends.findIndex(end => end <= event.start + 1e-10);
-      if (level === -1) level = ends.length;
-      ends[level] = event.start + event.duration;
-      positions.set(event.id, level);
+    const sorted = [...list].sort((a, b) => outstandingWindow(a)[0] - outstandingWindow(b)[0] || b.duration - a.duration || String(a.id).localeCompare(String(b.id)));
+    const rows = [];
+    for (const event of sorted) {
+      if (event.kind === 'marker') {
+        if (!rows.length) rows.push({ last: -Infinity, events: [] });
+        rows[0].events.push(event);
+        continue;
+      }
+      const [from, to] = outstandingWindow(event);
+      let row = rows.find(candidate => candidate.last <= from + 1e-10);
+      if (!row) { row = { last: -Infinity, events: [] }; rows.push(row); }
+      row.last = to;
+      row.events.push(event);
     }
-    laneDepth.set(laneId, Math.max(1, ends.length));
+    const info = [];
+    for (const row of rows) {
+      let start = Infinity, end = -Infinity;
+      for (const event of row.events) { const [from, to] = outstandingWindow(event); start = Math.min(start, from); end = Math.max(end, to); }
+      const index = info.length;
+      info.push({ index, count: row.events.length, idle: false, start, end });
+      for (const event of row.events) positions.set(event.id, index);
+    }
+    const declared = capacity?.get(laneId) ?? 0;
+    const outstanding = list.some(event => event.issue !== undefined || event.complete !== undefined);
+    const depth = Math.max(info.length, outstanding ? declared : 0, 1);
+    for (let index = info.length; index < depth; index++) info.push({ index, count: 0, idle: true, start: null, end: null });
+    laneDepth.set(laneId, depth);
+    rowInfo.set(laneId, info);
   }
-  return { positions, laneDepth };
+  return { positions, laneDepth, rowInfo };
 }
 
 export function importChromeTrace(input, options = {}) {

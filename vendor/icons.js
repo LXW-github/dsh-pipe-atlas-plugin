@@ -21,6 +21,8 @@ const paths = {
   cpu: '<rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 1v4m6-4v4M9 19v4m6-4v4M1 9h4m-4 6h4m14-6h4m-4 6h4"/><rect x="9" y="9" width="6" height="6" rx="1"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/>',
   overlap: '<rect x="3" y="5" width="12" height="9" rx="2"/><rect x="9" y="10" width="12" height="9" rx="2"/>',
+  collapse: '<path d="M4 9h16M4 15h16M9 6l3-3 3 3M9 18l3 3 3-3"/>',
+  expand: '<path d="M4 9h16M4 15h16M9 3l3 3 3-3M9 21l3-3 3 3"/>',
   table: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12M3 15h18"/>',
   help: '<circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 4 3c-1 0-1 1-1 2m0 3v.1"/>',
 };

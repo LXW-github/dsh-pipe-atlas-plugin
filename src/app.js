@@ -11,6 +11,7 @@ const { useEffect, useRef, useState, useSyncExternalStore } = React;
 const VIEWER_TAG = '__PIPE_ATLAS_VIEWER_TAG__';
 
 const DEMOS = [
+  { id: 'outstanding', icon: 'activity' },
   { id: 'scheduling', icon: 'clock' },
   { id: 'network', icon: 'layers' },
   { id: 'earlyStart', icon: 'overlap' },
@@ -237,7 +238,7 @@ function PipeAtlasPanel(props) {
   const textareaRef = useRef(null);
   const exportRef = useRef(null);
 
-  const [source, setSource] = useState({ kind: 'demo', id: 'scheduling' });
+  const [source, setSource] = useState({ kind: 'demo', id: 'outstanding' });
   const [info, setInfo] = useState(null);
   const [error, setError] = useState('');
   const [warningsOpen, setWarningsOpen] = useState(false);
@@ -297,7 +298,7 @@ function PipeAtlasPanel(props) {
     stage.appendChild(viewer);
     viewerRef.current = viewer;
     try {
-      viewer.load(DEMO_DATA.scheduling);
+      viewer.load(DEMO_DATA.outstanding);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
     }
@@ -657,7 +658,7 @@ function PipeAtlasPanel(props) {
           h('div', { className: 'pa-footer' },
             h('span', null, h('i', { className: 'pa-square', 'aria-hidden': true }), t('footer.left')),
             h('span', { className: 'pa-footer-right' },
-              'SVG renderer', h('i', null, '·'), 'Framework independent', h('i', null, '·'), 'JSON v1.2'))))),
+              'SVG renderer', h('i', null, '·'), 'Framework independent', h('i', null, '·'), 'JSON v1.3'))))),
 
     h('input', {
       ref: fileInputRef,

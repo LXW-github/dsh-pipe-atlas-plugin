@@ -33,6 +33,7 @@ const DEMO_FILES = {
   scheduling: 'scheduling.json',
   network: 'network.json',
   earlyStart: 'demo.json',
+  outstanding: 'outstanding.json',
   minimal: 'minimal.json',
 };
 
