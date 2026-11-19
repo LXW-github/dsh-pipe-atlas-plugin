@@ -11,7 +11,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
-import { layoutEvents, outstandingWindow, parseTrace } from '../vendor/model.js';
+import { layoutEvents, outstandingWindow, parseTrace, loadTrace, laneSortIndex, phaseStats, taskOverlaps, traceStats } from '../vendor/model.js';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const read = (file) => readFileSync(join(root, file), 'utf8');
@@ -89,6 +89,61 @@ assert.equal(derived.duration, 10, 'duration defaults to complete - issue');
 const invalid = structuredClone(trace13);
 invalid.scenarios[0].events[0].issue = 5;
 assert.throws(() => parseTrace(invalid), /must not be later than start/, 'issue after start is rejected');
+
+for (const name of ['demo', 'minimal', 'network', 'outstanding', 'scheduling']) {
+  parseTrace(read(`vendor/${name}.json`));
+}
+const scheduling = parseTrace(read('vendor/scheduling.json')).document;
+assert.equal(scheduling.schemaVersion, '1.4');
+assert.equal(scheduling.lanes.find(lane => lane.id === 'c0-fetch').engine, 'AIV');
+assert.equal(scheduling.kernels[0].label, 'kernel0');
+assert.ok(phaseStats(scheduling.scenarios[0].events).scheduleCount > 1);
+const invalidEngine = structuredClone(scheduling);
+invalidEngine.lanes.find(lane => lane.id === 'c0-fetch').engineId = 'vector-1';
+assert.throws(() => parseTrace(invalidEngine), /engine instance in this core/);
+
+// Match msopprof trace.json identities even when Chrome metadata supplies the names.
+const msinsight = loadTrace({ profilingType: 'op', displayTimeUnit: 'ns', traceEvents: [
+  { ph: 'M', pid: 7, name: 'process_name', args: { name: 'core2.veccore1' } },
+  { ph: 'M', pid: 7, tid: 8, name: 'thread_name', args: { name: 'FC' } },
+  { ph: 'M', pid: 7, tid: 8, name: 'thread_sort_index', args: { sort_index: 12 } },
+  { ph: 'X', pid: 'core2.cubecore0', tid: 'MTE2', ts: 1, dur: 4, name: 'MOV_GM_L1', args: { task_id: 31, kernel: 'mix' } },
+  { ph: 'X', pid: 7, tid: 'MTE2', ts: 3, dur: 1, name: 'cache_time', args: { task_id: 32 } },
+  { ph: 'X', pid: 7, tid: 8, ts: 4, dur: 3, name: 'WAIT_FLAG_DEVI', args: { task_id: 32 } },
+  { ph: 'X', pid: 7, tid: 'CACHEMISS', ts: 4, dur: 1, name: 'ICACHE_MISS', args: { task_id: 32 } },
+  { ph: 'X', pid: 'core2.veccore0', tid: 'MTE2', ts: 4, dur: 4, name: 'MOV_GM_UB', args: { task_id: 32, kernel: 'mix' } },
+  { ph: 'X', pid: 'core2.veccore0', tid: 'VEC', ts: 8, dur: 1, name: 'VADD', args: { task_id: 32 } },
+  { ph: 'X', pid: 'core2.veccore0', tid: 'VECTOR', ts: 9, dur: 1, name: 'VSUB', args: { task_id: 32 } },
+  { ph: 'X', pid: 'device1.core2.veccore0', tid: 'SCALAR', ts: 9, dur: 1, name: 'MOV_XD_IMM', args: { task_id: 32 } },
+] }).document;
+assert.equal(msinsight.schemaVersion, '1.4');
+assert.equal(msinsight.metadata.timeUnit, 'us', 'the Chrome display unit does not rescale timestamps');
+assert.equal(msinsight.cores.length, 2, 'devices are independent and subcores share their physical core');
+assert.deepEqual(msinsight.cores[0].engines.map(e => e.type).sort(), ['AIC', 'AIV', 'AIV']);
+const flow = msinsight.lanes.find(lane => lane.pipe === 'FLOWCTRL');
+assert.deepEqual(flow.trace, { pid: 7, tid: 8, processName: 'core2.veccore1', threadName: 'FC', sortIndex: 12 });
+assert.equal(laneSortIndex(flow), 12);
+assert.equal(laneSortIndex(msinsight.lanes.find(lane => lane.pipe === 'MTE2')), 6);
+assert.equal(new Set(msinsight.lanes.filter(lane => lane.pipe === 'MTE2').map(lane => lane.engineId)).size, 3);
+assert.deepEqual(msinsight.lanes.filter(lane => lane.pipe === 'VECTOR').map(lane => lane.trace.tid), ['VEC', 'VECTOR']);
+assert.equal(msinsight.kernels.length, 1, 'two invocations share their kernel');
+assert.equal(msinsight.tasks.length, 2, 'two source task IDs stay distinct');
+const [sim] = msinsight.scenarios;
+assert.equal(sim.events.find(event => event.name === 'WAIT_FLAG_DEVI').kind, 'wait');
+const cacheTime = sim.events.find(event => event.name === 'cache_time');
+assert.equal(cacheTime.kind, 'diagnostic');
+assert.equal(msinsight.lanes.find(lane => lane.id === cacheTime.laneId).pipe, 'MTE2');
+const laneMap = new Map(msinsight.lanes.map(lane => [lane.id, lane]));
+assert.equal(traceStats(sim.events, msinsight.lanes).laneBusy.get(cacheTime.laneId), 0);
+assert.deepEqual(taskOverlaps(sim.events, laneMap).map(({ start, end }) => [start, end]), [[3, 4]]);
+assert.deepEqual(parseTrace(JSON.stringify(msinsight)).document, msinsight);
+
+const noTask = loadTrace([
+  { ph: 'X', pid: 'core0.veccore0', tid: 'VECTOR', ts: 2, dur: 1, name: 'VADD', cat: 'compute-color' },
+  { ph: 'X', pid: 'core0.veccore0', tid: 'CACHEMISS', ts: 3, dur: 1, name: 'MISS', cat: 'cache-color' },
+]).document;
+assert.deepEqual(noTask.tasks.map(task => [task.label, task.kernelId]), [['task0', 'kernel0']]);
+assert.equal(noTask.kernels[0].label, 'kernel0');
 
 const source = read('client.js');
 assert.ok(!/^\s*import\s/m.test(source), 'client.js must not contain ESM imports');

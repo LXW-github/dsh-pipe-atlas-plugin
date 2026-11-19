@@ -24,6 +24,13 @@
   ],
   "lanes": [
     {
+      "id": "c0-all",
+      "label": "ALL",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "ALL"
+    },
+    {
       "id": "c0-s",
       "coreId": "core-0",
       "engine": "AIV",
@@ -78,6 +85,13 @@
       "engine": "AIC",
       "pipe": "FIXP",
       "label": "FIXP"
+    },
+    {
+      "id": "c1-all",
+      "label": "ALL",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "ALL"
     },
     {
       "id": "c1-s",
@@ -1849,7 +1863,7 @@
         },
         {
           "id": "c0-a_barrier",
-          "laneId": "c0-s",
+          "laneId": "c0-all",
           "kernelId": "matmul",
           "taskId": "matmul:block-0",
           "blockId": "0",
@@ -2011,7 +2025,7 @@
         },
         {
           "id": "c0-b_barrier",
-          "laneId": "c0-s",
+          "laneId": "c0-all",
           "kernelId": "norm",
           "taskId": "norm:block-0",
           "blockId": "0",
@@ -2386,7 +2400,7 @@
         },
         {
           "id": "c1-a_barrier",
-          "laneId": "c1-s",
+          "laneId": "c1-all",
           "kernelId": "matmul",
           "taskId": "matmul:block-1",
           "blockId": "1",
@@ -2548,7 +2562,7 @@
         },
         {
           "id": "c1-b_barrier",
-          "laneId": "c1-s",
+          "laneId": "c1-all",
           "kernelId": "norm",
           "taskId": "norm:block-1",
           "blockId": "1",

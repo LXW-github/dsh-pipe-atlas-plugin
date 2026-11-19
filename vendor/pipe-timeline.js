@@ -1,9 +1,9 @@
-import { loadTrace, traceStats, layoutEvents, outstandingWindow, traceTasks, taskSummaries, taskOverlaps, intervalLength, eventCoreIds, phaseDependencies, phaseStats } from './model.js';
+import { loadTrace, traceStats, layoutEvents, outstandingWindow, traceTasks, taskSummaries, taskOverlaps, intervalLength, eventCoreIds, phaseDependencies, phaseStats, laneEngine, laneRole, laneSortIndex, isExecutionLane } from './model.js';
 import { styles } from './component-style.js';
 import { icon, escapeHtml as esc } from './icons.js';
 
 const COLORS = ['#1b9c85', '#6d71d5', '#cb9353', '#438ac7', '#bb719e', '#6c9a46'];
-const KIND = { transfer: '数据搬运', compute: '计算', wait: '同步等待', marker: '瞬时事件', allocation: '内存分配', schedule: '取指前调度', fetch: '指令取指' };
+const KIND = { transfer: '数据搬运', compute: '计算', wait: '同步等待', marker: '瞬时事件', allocation: '内存分配', schedule: '取指前调度', fetch: '指令取指', control: '控制流', diagnostic: '诊断事件' };
 const fmt = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 }).format(value);
 const percent = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(value);
 const clamp = (value, a, b) => Math.max(a, Math.min(b, value));
@@ -45,33 +45,58 @@ export class PipeTimeline extends HTMLElement {
   get unit() { return this._document?.metadata.timeUnit === 'us' ? 'μs' : this._document?.metadata.timeUnit ?? ''; }
   get coreIds() { return [...this.selectedCoreIds]; }
   get coreId() { return this.coreIds[0]; }
-  get network() { return ['1.1', '1.2', '1.3'].includes(this._document?.schemaVersion); }
+  get network() { return ['1.1', '1.2', '1.3', '1.4'].includes(this._document?.schemaVersion); }
   get coreTerm() { return this.network ? '物理核' : 'Core'; }
-  get lanes() {
+  get lanes() { return this.visibleLanes ?? []; }
+  orderLanes() {
     if (!this._document) return [];
-    const cores = this._document.cores.filter(c => this.selectedCoreIds.has(c.id)), devices = new Set(cores.map(c => c.deviceId));
-    const rank = lane => lane.engine === 'SCHEDULER' ? 0 : lane.role === 'fetch' ? 1 : lane.engine === 'AIC' ? 2 : 3;
-    return [...this._document.lanes.filter(l => l.coreId === undefined && devices.has(l.deviceId)), ...cores.flatMap(c => this._document.lanes.filter(l => l.coreId === c.id).sort((a,b) => rank(a)-rank(b)))];
+    const cores = this._document.cores.filter(core => this.selectedCoreIds.has(core.id));
+    const devices = new Set(cores.map(core => core.deviceId));
+    const used = new Set(this.scenario.events.map(event => event.laneId));
+    const shared = [], byCore = new Map(cores.map(core => [core.id, []]));
+    for (const lane of this._document.lanes) {
+      if (!used.has(lane.id) && lane.issueWidth === undefined && (this._document.schemaVersion === '1.4' || !isExecutionLane(lane))) continue;
+      if (lane.coreId === undefined && devices.has(lane.deviceId)) shared.push(lane);
+      else byCore.get(lane.coreId)?.push(lane);
+    }
+    const engineRank = lane => lane.engine === 'AIC' ? 0 : lane.engine === 'AIV' ? 1 : 2;
+    const compare = (a, b) => {
+      const engineA = this.engineMap.get(a.id), engineB = this.engineMap.get(b.id);
+      return engineRank(a) - engineRank(b)
+        || (engineA.label ?? engineA.id).localeCompare(engineB.label ?? engineB.id, undefined, { numeric: true })
+        || engineA.id.localeCompare(engineB.id)
+        || Number(laneRole(b) === 'fetch') - Number(laneRole(a) === 'fetch')
+        || laneSortIndex(a) - laneSortIndex(b)
+        || a.label.localeCompare(b.label);
+    };
+    return [...shared, ...cores.flatMap(core => byCore.get(core.id).sort(compare))];
   }
   get scenarioEvents() { return this.scenario?.events.map(e => this.network ? e : { ...e, taskId: e.kernelId }) ?? []; }
   get dependencies() { return phaseDependencies(this.scenario); }
   get taskEvents() { return this.coreEvents.filter(e => !this.hiddenTasks.has(e.taskId) && !this.hiddenKernels.has(e.kernelId)); }
-  get overlaps() { return taskOverlaps(this.taskEvents); }
+  get overlaps() { return taskOverlaps(this.taskEvents, this.laneMap); }
   get overlapEntries() {
     return [
       ...this.overlaps.map(region => ({ ...region, scope: '所选核合并' })),
-      ...this._document.cores.filter(c => this.selectedCoreIds.has(c.id)).flatMap(core => taskOverlaps(this.taskEvents.filter(e => this.laneMap.get(e.laneId).coreId === core.id)).map(region => ({ ...region, coreId: core.id, scope: core.label }))),
+      ...this._document.cores.filter(c => this.selectedCoreIds.has(c.id)).flatMap(core => taskOverlaps(this.taskEvents.filter(e => this.laneMap.get(e.laneId).coreId === core.id), this.laneMap).map(region => ({ ...region, coreId: core.id, scope: core.label }))),
     ];
   }
   eventColor(event) {
     if (event.kind === 'schedule') return this.getAttribute('theme') === 'dark' ? '#e3b777' : '#ae762e';
     if (event.kind === 'fetch') return this.getAttribute('theme') === 'dark' ? '#b4a2ee' : '#8771bb';
+    if (event.kind === 'diagnostic') return this.palette().muted;
     return this.taskMap.get(event.taskId)?.color ?? this.kernelMap.get(event.kernelId)?.color ?? COLORS[0];
   }
   eventCoreLabel(event) {
     const ids = eventCoreIds(event, this.laneMap, this.eventMap);
     return this._document.cores.filter(c => ids.includes(c.id)).map(c => c.label).join(' + ');
   }
+  engineLabel(lane) {
+    if (lane.engine === 'SCHEDULER') return 'NPU 调度';
+    const engine = this.engineMap.get(lane.id);
+    return engine.id === engine.type ? engine.type : `${engine.type} · ${engine.label ?? engine.id}`;
+  }
+  trackLabel(lane) { return this.trackLabels.get(lane.id) ?? lane.label; }
   get selectedCoreLabel() { return this._document.cores.filter(c => this.selectedCoreIds.has(c.id)).map(c => c.label).join(', '); }
   get coreEvents() {
     const events = this.scenarioEvents, map = new Map(events.map(e => [e.id,e]));
@@ -125,7 +150,7 @@ export class PipeTimeline extends HTMLElement {
   matches(e) {
     if (!this.query) return true;
     const lane = this.laneMap.get(e.laneId), kernel = this.kernelMap.get(e.kernelId);
-    return `${e.name} ${e.id} ${e.taskId ?? ''} ${this.taskMap.get(e.taskId)?.label ?? ''} ${e.blockId ?? ''} ${lane?.coreId} ${lane?.pipe} ${lane?.engine} ${kernel?.label} ${JSON.stringify(e.args ?? {})}`.toLowerCase().includes(this.query.toLowerCase());
+    return `${e.name} ${e.id} ${e.taskId ?? ''} ${this.taskMap.get(e.taskId)?.label ?? ''} ${e.blockId ?? ''} ${lane?.coreId} ${lane?.pipe} ${this.engineLabel(lane)} ${lane?.trace?.processName ?? ''} ${lane?.trace?.threadName ?? ''} ${kernel?.label} ${JSON.stringify(e.args ?? {})}`.toLowerCase().includes(this.query.toLowerCase());
   }
   emit(name, detail) { this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true })); }
   load(input, options) {
@@ -133,7 +158,19 @@ export class PipeTimeline extends HTMLElement {
       const { document, warnings } = loadTrace(input, options);
       this._document = document;
       this.warnings = warnings;
+      this.coreMap = new Map(document.cores.map(core => [core.id, core]));
       this.laneMap = new Map(document.lanes.map(l => [l.id, l]));
+      this.engineMap = new Map(document.lanes.map(lane => [lane.id, laneEngine(this.coreMap.get(lane.coreId), lane)]));
+      const tracksByName = new Map();
+      for (const lane of document.lanes) {
+        const key = JSON.stringify([this.groupKeyOf(lane), this.engineMap.get(lane.id).id, lane.label]);
+        if (!tracksByName.has(key)) tracksByName.set(key, []);
+        tracksByName.get(key).push(lane);
+      }
+      this.trackLabels = new Map();
+      for (const tracks of tracksByName.values()) if (tracks.length > 1) {
+        for (const lane of tracks) this.trackLabels.set(lane.id, `${lane.label} · ${lane.trace?.tid ?? lane.id}`);
+      }
       this.kernelMap = new Map(document.kernels.map((k, i) => [k.id, { ...k, color: k.color ?? COLORS[i % COLORS.length] }]));
       this.scenarioId = document.scenarios[0].id;
       this.taskMap = new Map(traceTasks(document).map((task, i) => [task.id, { ...task, color: task.color ?? COLORS[i % COLORS.length] }]));
@@ -190,6 +227,7 @@ export class PipeTimeline extends HTMLElement {
     this.setView(start - pad, end + pad);
   }
   resetView(notify = true) {
+    this.visibleLanes = this.orderLanes();
     const stats = traceStats(this.coreEvents, this.lanes, this.regions);
     const pad = (stats.duration || 1) * .025;
     this.extent = [Math.max(0, stats.start - pad), Math.max(stats.end + pad, stats.start + 1e-6)];
@@ -250,7 +288,7 @@ export class PipeTimeline extends HTMLElement {
           <div class="panel-head"><div class="panel-title"><span class="live"></span>执行时间线<small class="lane-count"></small></div><div class="scenarios" role="group" aria-label="选择场景"></div></div>
           <div class="warnings" hidden></div>
           <div class="toolbar">
-            <details class="core-picker"><summary aria-label="选择多个物理核"><span class="core-summary"></span><span>⌄</span></summary><div class="core-popover"><div class="core-quick"><strong>Core</strong><button data-action="all-cores">全选</button><button data-action="one-core">仅当前核</button></div><div class="core-options"></div><p>每核 = 1 Cube + 1 Vector · 至少选择一核</p></div></details>
+            <details class="core-picker"><summary aria-label="选择多个物理核"><span class="core-summary"></span><span>⌄</span></summary><div class="core-popover"><div class="core-quick"><strong>Core</strong><button data-action="all-cores">全选</button><button data-action="one-core">仅当前核</button></div><div class="core-options"></div><p>至少选择一项</p></div></details>
             <label class="search">${icon('search', 15)}<input type="search" placeholder="搜索事件、Pipe、参数…" aria-label="搜索事件"><span class="key">/</span></label>
             <span class="spacer"></span>
             <button data-action="overlaps" title="标注不同 task 的计算与搬运区间重叠" aria-pressed="true">${icon('overlap', 15)}<span class="tool-text">Task overlap</span></button><button data-action="dependencies" title="显示全部依赖连线；选中事件时始终显示其直接依赖" aria-pressed="false">${icon('link', 15)}<span class="tool-text">依赖连线</span></button>
@@ -344,11 +382,15 @@ export class PipeTimeline extends HTMLElement {
     // Rows must be laid out before the header counts them.
     this.layout = layoutEvents(this.taskEvents, { capacity: this.laneCapacity });
     this.$('.core-summary').textContent = `${this.selectedCoreIds.size} / ${this._document.cores.length} ${this.coreTerm}`;
-    this.$('.core-popover > p').textContent = this.network ? '每核 = 1 Cube + 1 Vector · 至少选择一核' : '旧版逻辑 Core 分组 · 至少选择一项';
     const devices = this._document.devices ?? [{ id: null, label: 'Cores' }];
-    this.$('.core-options').innerHTML = devices.map(device => `<div class="device-name">${esc(device.label)}</div>${this._document.cores.filter(c => !device.id || c.deviceId === device.id).map(c => `<label class="core-option"><input type="checkbox" data-core="${esc(c.id)}" ${this.selectedCoreIds.has(c.id) ? 'checked' : ''}><span><strong>${esc(c.label)}</strong><small>${esc(this.network ? `${c.cubeId} + ${c.vectorId}` : 'Original trace grouping')}</small></span><span class="engine-ratio">${this.network ? '1:1' : 'TRACE'}</span></label>`).join('')}`).join('');
+    this.$('.core-options').innerHTML = devices.map(device => `<div class="device-name">${esc(device.label)}</div>${this._document.cores.filter(c => !device.id || c.deviceId === device.id).map(core => {
+      const units = Array.isArray(core.engines)
+        ? core.engines.filter(Boolean).map(engine => engine.label ?? engine.id)
+        : [core.cubeId, core.vectorId].filter(Boolean);
+      return `<label class="core-option"><input type="checkbox" data-core="${esc(core.id)}" ${this.selectedCoreIds.has(core.id) ? 'checked' : ''}><span><strong>${esc(core.label)}</strong>${units.length ? `<small>${esc(units.join(' · '))}</small>` : ''}</span></label>`;
+    }).join('')}`).join('');
     this.$('.scenarios').innerHTML = this._document.scenarios.map(s => `<button data-scenario="${esc(s.id)}" class="${s.id === this.scenarioId ? 'active' : ''}" aria-pressed="${s.id === this.scenarioId}">${esc(s.label)}</button>`).join('');
-    this.$('.lane-count').textContent = `${this.selectedCoreIds.size} ${this.coreTerm} · ${this.lanes.length} 条 Pipe · ${this.visibleRowTotal()} 行${this.collapsedLaneTotal() ? `（${this.collapsedLaneTotal()} 条已折叠）` : ''}${this.network ? ' · Cube / Vector 1:1' : ' · 旧版分组'}`;
+    this.$('.lane-count').textContent = `${this.selectedCoreIds.size} ${this.coreTerm} · ${this.lanes.length} 条泳道 · ${this.visibleRowTotal()} 行${this.collapsedLaneTotal() ? `（${this.collapsedLaneTotal()} 条已折叠）` : ''}`;
     const collapsible = this.lanes.some(lane => this.rowDepth(lane.id) > 1);
     for (const action of ['collapse-all', 'expand-all']) {
       const button = this.$(`[data-action=${action}]`);
@@ -388,7 +430,8 @@ export class PipeTimeline extends HTMLElement {
   }
   drawPhaseSummary() {
     const stats = phaseStats(this.taskEvents), area = this.$('.phase-summary');
-    area.hidden = !stats.scheduleCount && !stats.fetchCount;
+    this.hasPhaseEvents = Boolean(stats.scheduleCount || stats.fetchCount);
+    area.hidden = !this.hasPhaseEvents;
     area.innerHTML = `<span class="phase-badge scheduling"><i></i>取指前调度 <strong>${fmt(stats.scheduleDuration)} ${this.unit}</strong><small>${stats.scheduleCount} 段</small></span><span class="phase-badge fetching"><i></i>指令取指 <strong>${fmt(stats.fetchDuration)} ${this.unit}</strong><small>${stats.fetchCount} 次</small></span><span class="phase-note">所选 Core / Task · 各阶段时间取并集，间隔不计入 · 不计入计算 Pipe 活跃时间</span>`;
   }
   palette() {
@@ -403,20 +446,23 @@ export class PipeTimeline extends HTMLElement {
     const [start, end] = this.view;
     const scale = t => left+(t-start)/(end-start)*plotWidth;
     let y = top;
-    const rows = new Map(), groups = [];
+    const rows = new Map(), groups = [], engineHeaders = [];
     let previousEngine, previousCore;
     for (const lane of this.lanes) {
       const groupKey = this.groupKeyOf(lane);
       const coreChange = previousCore !== groupKey;
       if (coreChange) { groups.push({ y, coreId: lane.coreId, deviceId: lane.deviceId, key: groupKey }); y += 29; previousEngine = undefined; }
-      const engineChange = previousEngine !== undefined && previousEngine !== lane.engine;
-      if (engineChange) y += 13;
+      const engine = this.engineMap.get(lane.id);
+      if (lane.coreId !== undefined && engine.id !== previousEngine && engine.type !== 'TRACE') {
+        engineHeaders.push({ y, engine, label: this.engineLabel(lane) });
+        y += 22;
+      }
       const depth = this.rowDepth(lane.id), collapsed = this.laneCollapsed(lane.id);
       const visible = collapsed ? 1 : depth, pad = depth > 1 && !collapsed ? 17 : 12;
       const height = Math.max(43, pad+visible*29+2);
-      rows.set(lane.id, { y, height, pad, depth, visible, collapsed, engineChange });
+      rows.set(lane.id, { y, height, pad, depth, visible, collapsed });
       y += height;
-      previousEngine = lane.engine;
+      previousEngine = engine.id;
       previousCore = groupKey;
     }
     const height = y+14, p = this.palette();
@@ -427,14 +473,14 @@ export class PipeTimeline extends HTMLElement {
     for (const lane of this.lanes) {
       const r = rows.get(lane.id), busy = this.stats.duration ? (this.stats.laneBusy.get(lane.id) ?? 0)/this.stats.duration : 0;
       out.push(`<rect x="0" y="${r.y}" width="${width}" height="${r.height}" fill="${index++%2 ? p.bg : p.row}"/><path d="M0 ${r.y+r.height}H${width}" stroke="${p.grid}"/>`);
-      if (r.engineChange) out.push(`<path d="M0 ${r.y-6}H${width}" stroke="${p.grid}" stroke-dasharray="3 3"/>`);
-      const detail = lane.engine === 'SCHEDULER' ? 'PRE-FETCH SCHEDULING' : lane.role === 'fetch' ? `${lane.engine} · INSTRUCTION FETCH` : `${lane.engine} · ${percent(busy*100)}%`;
+      const role = laneRole(lane), trackLabel = this.trackLabel(lane);
+      const detail = { schedule: '取指前调度', fetch: '取指阶段', diagnostic: '诊断泳道' }[role] ?? `${percent(busy*100)}% 活跃`;
       if (r.depth > 1) {
         const labelX = 26, arrow = `<path d="M0 -4.5 7 0 0 4.5Z" transform="translate(7 ${r.y+9}) rotate(${r.collapsed ? 0 : 90})" fill="${r.collapsed ? p.muted : p.text}"/>`;
-        out.push(`<g class="lane-toggle" data-row-toggle="${esc(lane.id)}" role="button" tabindex="0" aria-expanded="${!r.collapsed}" aria-label="${r.collapsed ? '展开' : '折叠'} ${esc(lane.label)} 的 ${r.depth} 行"><title>${r.collapsed ? '展开' : '折叠'} ${esc(lane.label)} · ${r.depth} 行 · ${esc(detail)}</title><rect x="2" y="${r.y+1}" width="17" height="15" fill="transparent"/>${arrow}</g>`);
+        out.push(`<g class="lane-toggle" data-row-toggle="${esc(lane.id)}" role="button" tabindex="0" aria-expanded="${!r.collapsed}" aria-label="${r.collapsed ? '展开' : '折叠'} ${esc(trackLabel)} 的 ${r.depth} 行"><title>${r.collapsed ? '展开' : '折叠'} ${esc(trackLabel)} · ${r.depth} 行 · ${esc(detail)}</title><rect x="2" y="${r.y+1}" width="17" height="15" fill="transparent"/>${arrow}</g>`);
         const badge = r.collapsed ? `${r.depth} 行 · 已折叠` : `${r.depth} 行`;
         const available = left-12-labelX-8-textWidth(badge)*(8.5/10.5)-12;
-        let label = lane.label;
+        let label = trackLabel;
         if (textWidth(label) > available) { const count = Math.max(0, Math.floor(available/6)-1); label = count > 2 ? [...label].slice(0, count).join('')+'…' : ''; }
         out.push(`<text x="${labelX}" y="${r.y+13}" fill="${p.text}" font-size="10.5" font-weight="600">${esc(label)}</text><text x="${left-10}" y="${r.y+13}" text-anchor="end" fill="${r.collapsed ? p.muted : p.region}" font-family="Consolas,monospace" font-size="8.5">${esc(badge)}</text>`);
         if (!r.collapsed) {
@@ -446,18 +492,21 @@ export class PipeTimeline extends HTMLElement {
           });
         }
       } else {
-        let label = lane.label;
+        let label = trackLabel;
         if (textWidth(label) > left-28) { const count = Math.max(0, Math.floor((left-28)/6)-1); label = count > 2 ? [...label].slice(0, count).join('')+'…' : ''; }
-        out.push(`<text x="16" y="${r.y+18}" fill="${p.text}" font-size="10.5" font-weight="600">${esc(label)}</text><text x="16" y="${r.y+32}" fill="${p.muted}" font-family="Consolas,monospace" font-size="7.8">${esc(detail)}</text>`);
+        out.push(`<g data-track-label="${esc(lane.id)}"><title>${esc(trackLabel)} · ${esc(detail)}</title><text x="20" y="${r.y+18}" fill="${p.text}" font-size="10.5" font-weight="600">${esc(label)}</text><text x="20" y="${r.y+32}" fill="${p.muted}" font-size="8.5">${esc(detail)}</text></g>`);
       }
     }
     for (const group of groups) {
-      const core = this._document.cores.find(c => c.id === group.coreId);
+      const core = this.coreMap.get(group.coreId);
       const device = this._document.devices?.find(d => d.id === (core?.deviceId ?? group.deviceId));
-      const context = !core ? '共享调度资源 · 调度阶段先于目标核取指' : this.network ? `${device?.label ?? 'NPU'} · ${core.cubeId} + ${core.vectorId} · Cube / Vector 1:1` : 'Imported / legacy Core grouping';
+      const context = core ? device?.label ?? '' : '共享调度资源 · 先于目标核取指';
       const groupMulti = this.lanes.some(lane => this.groupKeyOf(lane) === group.key && this.rowDepth(lane.id) > 1), groupCollapsed = this.collapsedGroups.has(group.key);
       const toggle = groupMulti ? `<g class="lane-toggle" data-group-toggle="${esc(group.key)}" role="button" tabindex="0" aria-expanded="${!groupCollapsed}" aria-label="${groupCollapsed ? '展开' : '折叠'}该核全部 Pipe 的多行"><title>${groupCollapsed ? '展开' : '折叠'}该核全部 Pipe 的多行</title><path d="M0 -4.5 7 0 0 4.5Z" transform="translate(7 ${group.y+10}) rotate(${groupCollapsed ? 0 : 90})" fill="${groupCollapsed ? p.muted : p.text}"/><rect x="2" y="${group.y+3}" width="17" height="15" fill="transparent"/></g>` : '';
-      out.push(`<rect x="0" y="${group.y}" width="${width}" height="27" fill="${p.row}"/><path d="M0 ${group.y}H${width}" stroke="${p.grid}"/><text x="${groupMulti ? 26 : 16}" y="${group.y+18}" fill="${p.text}" font-size="11" font-weight="600">${esc(core?.label ?? `${device?.label} 调度`)}</text><text x="${left+8}" y="${group.y+18}" fill="${p.muted}" font-size="9">${esc(context)}</text>${toggle}`);
+      out.push(`<g data-core-header="${esc(group.key)}"><rect x="0" y="${group.y}" width="${width}" height="27" fill="${p.row}"/><path d="M0 ${group.y}H${width}" stroke="${p.grid}"/><text x="${groupMulti ? 26 : 16}" y="${group.y+18}" fill="${p.text}" font-size="11" font-weight="600">${esc(core?.label ?? `${device?.label ?? 'NPU'} 调度`)}</text><text x="${left+8}" y="${group.y+18}" fill="${p.muted}" font-size="9">${esc(context)}</text>${toggle}</g>`);
+    }
+    for (const header of engineHeaders) {
+      out.push(`<g data-engine-header="${esc(header.engine.type)}"><rect x="0" y="${header.y}" width="${width}" height="22" fill="${p.bg}"/><rect x="0" y="${header.y}" width="${left}" height="22" fill="${p.region}" fill-opacity=".10"/><path d="M0 ${header.y+21}H${width}" stroke="${p.grid}"/><text x="20" y="${header.y+14}" fill="${p.region}" font-size="10.5" font-weight="600">${esc(header.label)}</text></g>`);
     }
     out.push(`<path d="M${left-1} 0V${height}" stroke="${p.grid}"/><text x="16" y="22" fill="${p.muted}" font-family="Consolas,monospace" font-size="9">PIPE / ${esc(this.unit)}</text><g clip-path="url(#plot-clip)">`);
     const rawStep = (end-start)/Math.max(3, Math.floor(plotWidth/85));
@@ -482,7 +531,7 @@ export class PipeTimeline extends HTMLElement {
       if (group.coreId === undefined) continue;
       const next = groups[groups.indexOf(group)+1]?.y ?? height;
       const events = this.taskEvents.filter(e => this.laneMap.get(e.laneId).coreId === group.coreId);
-      for (const region of taskOverlaps(events)) {
+      for (const region of taskOverlaps(events, this.laneMap)) {
         if (region.end <= start || region.start >= end) continue;
         const x = scale(region.start), w = scale(region.end)-x;
         out.push(`<g class="core-overlap" role="button" tabindex="0" data-range-start="${region.start}" data-range-end="${region.end}"><title>${esc(group.coreId)} · ${esc(region.label)} · ${fmt(region.end-region.start)} ${esc(this.unit)}</title><rect x="${x}" y="${group.y+28}" width="${w}" height="${next-group.y-28}" fill="${p.region}" opacity=".065" pointer-events="none"/><rect x="${x}" y="${group.y+3}" width="${w}" height="21" rx="3" fill="${p.region}" fill-opacity=".17"/>${w>85?`<text x="${x+w/2}" y="${group.y+17}" fill="${p.region}" text-anchor="middle" font-size="8">${esc(region.label)}</text>`:''}</g>`);
@@ -562,9 +611,9 @@ export class PipeTimeline extends HTMLElement {
     if (!this.geometry) return;
     const { width, left, right, plotWidth } = this.geometry, p = this.palette();
     const scale = t => left + (t-this.view[0])/(this.view[1]-this.view[0])*plotWidth;
-    const tasks = taskSummaries(this.taskEvents, [...this.taskMap.values()]);
+    const tasks = taskSummaries(this.taskEvents, [...this.taskMap.values()], this.laneMap);
     const height = 71 + tasks.length*24, ribbonY = height-44;
-    const out = [`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="Inter,Segoe UI,Microsoft YaHei,sans-serif" role="img" aria-label="Task 概览与所选核的执行重叠"><defs><clipPath id="task-clip"><rect x="${left}" width="${plotWidth}" height="${height}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${p.bg}"/><text x="16" y="17" fill="${p.muted}" font-size="9" letter-spacing="1">NETWORK TASKS</text><text x="${width-right}" y="17" fill="${p.muted}" font-size="9" text-anchor="end">${['1.2','1.3'].includes(this._document.schemaVersion)?'琥珀：调度 · 紫色：取指 · 实线：执行':'所选核合并 · 浅色为跨度，实线为计算 / 搬运'}</text>`];
+    const out = [`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="Inter,Segoe UI,Microsoft YaHei,sans-serif" role="img" aria-label="Task 概览与所选核的执行重叠"><defs><clipPath id="task-clip"><rect x="${left}" width="${plotWidth}" height="${height}"/></clipPath></defs><rect width="${width}" height="${height}" fill="${p.bg}"/><text x="16" y="17" fill="${p.muted}" font-size="9" letter-spacing="1">NETWORK TASKS</text><text x="${width-right}" y="17" fill="${p.muted}" font-size="9" text-anchor="end">${this.hasPhaseEvents ? '琥珀：调度 · 紫色：取指 · 实线：执行':'所选核合并 · 浅色为跨度，实线为计算 / 搬运'}</text>`];
     tasks.forEach((task, i) => {
       const y = 26+i*24, hidden = this.hiddenTasks.has(task.id), kernel = this.kernelMap.get(task.kernelId);
       out.push(`<g opacity="${hidden ? .35 : 1}"><text x="16" y="${y+13}" fill="${task.color}" font-size="10" font-weight="600">${esc(task.label)}</text><text x="64" y="${y+13}" fill="${p.muted}" font-size="8">${esc(kernel?.label.slice(0,12))}</text>`);
@@ -627,12 +676,19 @@ export class PipeTimeline extends HTMLElement {
       const cards = this.overlaps.slice(0, 12);
       const entries = this.overlapEntries;
       const coreTotals = this._document.cores.filter(c => this.selectedCoreIds.has(c.id)).map(c => ({ core:c, duration:intervalLength(entries.filter(r => r.coreId === c.id).map(r => [r.start,r.end])) }));
-      area.innerHTML=`<div class="inspector-title">整网执行<span class="muted">NETWORK</span></div><div class="network-context"><h3>${this.taskMap.size} Tasks · ${this.selectedCoreIds.size} Cores</h3><p>Task 表示一次算子调用，可跨多个物理核。颜色按 Task 区分；同一 Kernel 的多次调用独立展示。</p></div><div class="detail-section">所选核上的 Task overlap</div>${cards.map(r=>`<button class="region-card" data-range-start="${r.start}" data-range-end="${r.end}"><strong>${esc(r.label)} · ${fmt(r.end-r.start)} ${this.unit}</strong><p>${fmt(r.start)} — ${fmt(r.end)} ${this.unit} · 点击定位</p></button>`).join('') || '<p class="muted" style="font-size:11px">没有跨 Task 同时执行的区间。</p>'}<div class="detail-section">同一物理核上的重叠</div>${coreTotals.map(({core,duration})=>`<div class="detail-row"><span>${esc(core.label)}</span><code>${fmt(duration)} ${this.unit}</code></div>`).join('')}<div class="source-note">重叠按计算 / 搬运区间并集自动计算，等待、调度、取指、内存分配和瞬时点不计入。所选核合并值可包含不同核之间的并行；Core 分组只标注本核上的重叠。${this._document.metadata.source.kind==='synthetic' ? '当前为合成数据，不代表实测性能。' : ''}</div>`;
+      area.innerHTML=`<div class="inspector-title">整网执行<span class="muted">NETWORK</span></div><div class="network-context"><h3>${this.taskMap.size} Tasks · ${this.selectedCoreIds.size} Cores</h3><p>Task 表示一次算子调用，可跨多个物理核。颜色按 Task 区分；同一 Kernel 的多次调用独立展示。</p></div><div class="detail-section">所选核上的 Task overlap</div>${cards.map(r=>`<button class="region-card" data-range-start="${r.start}" data-range-end="${r.end}"><strong>${esc(r.label)} · ${fmt(r.end-r.start)} ${this.unit}</strong><p>${fmt(r.start)} — ${fmt(r.end)} ${this.unit} · 点击定位</p></button>`).join('') || '<p class="muted" style="font-size:11px">没有跨 Task 同时执行的区间。</p>'}<div class="detail-section">同一物理核上的重叠</div>${coreTotals.map(({core,duration})=>`<div class="detail-row"><span>${esc(core.label)}</span><code>${fmt(duration)} ${this.unit}</code></div>`).join('')}<div class="source-note">重叠按计算 / 搬运区间并集自动计算，等待、调度、取指、诊断和内存分配不计入。所选核合并值可包含不同核之间的并行；Core 分组只标注本核上的重叠。${this._document.metadata.source.kind==='synthetic' ? '当前为合成数据，不代表实测性能。' : ''}</div>`;
       return;
     }
     const lane=this.laneMap.get(e.laneId), kernel={ ...this.kernelMap.get(e.kernelId), color:this.eventColor(e) }, connections=this.dependencies.filter(d=>d.from===e.id || d.to===e.id);
     const row=(label,value)=>`<div class="detail-row"><span>${esc(label)}</span><code>${esc(value)}</code></div>`;
-    area.innerHTML=`<div class="inspector-title">事件详情<button data-action="deselect" aria-label="关闭事件详情">${icon('close',14)}</button></div><div class="inspector-name">${esc(e.name)}</div><span class="badge" style="color:${kernel.color}">${esc(kernel.label)}</span><span class="badge">${esc(KIND[e.kind])}</span><div class="detail-metrics"><div><span>开始时间</span><strong>${fmt(e.start)}</strong> <small>${this.unit}</small></div><div><span>持续时间</span><strong>${fmt(e.duration)}</strong> <small>${this.unit}</small></div></div><div class="detail-section">Execution</div>${row(lane.engine==='SCHEDULER'?'目标核':'物理核',this.eventCoreLabel(e))}${row(lane.engine==='SCHEDULER'?'调度资源':'Pipe',`${lane.engine} / ${lane.pipe}`)}${row('结束时间',`${fmt(e.start+e.duration)} ${this.unit}`)}${(() => { const [from, to] = outstandingWindow(e); return to > e.start+e.duration+1e-9 || from < e.start-1e-9 ? row('Outstanding',`${fmt(from)} → ${fmt(to)} ${this.unit}`) + row('在飞时长',`${fmt(to-from)} ${this.unit}`) : ''; })()}${this.rowDepth(lane.id) > 1 ? row('槽位',`O${(this.layout?.positions.get(e.id) ?? 0)+1} / ${this.rowDepth(lane.id)}`) : ''}${row('Task',e.taskId ?? '—')}${e.kind==='schedule'?row('后续取指',e.fetchIds.join(', ')):''}${e.fetchId?row('前置取指',e.fetchId):''}${e.blockId!==undefined?row('Block',e.blockId):''}${e.iteration!==undefined?row('Iteration',e.iteration):''}${e.source?.pc?row('PC',e.source.pc):''}${e.source?.file?row('Source',`${e.source.file}${e.source.line?':'+e.source.line:''}`):''}${Object.keys(e.args ?? {}).length?'<div class="detail-section">Arguments</div>':''}${Object.entries(e.args ?? {}).map(([key,value])=>row(key,typeof value==='string'?value:JSON.stringify(value))).join('')}<div class="detail-section">Dependencies · ${connections.length}</div>${connections.map(d=>{const incoming=d.to===e.id,other=this.eventMap.get(incoming?d.from:d.to);return `<button class="relation" data-select="${esc(other.id)}" title="${esc(d.label || d.type)}"><span>${incoming?'←':'→'} ${esc(other.name)}</span><small>${esc(d.type)}</small></button>`;}).join('') || '<span class="muted" style="font-size:11px">未声明依赖</span>'}`;
+    const trace = lane.trace;
+    const traceRows = trace ? [
+      row('原始 pid', trace.pid),
+      row('原始 tid', trace.tid),
+      trace.processName && trace.processName !== String(trace.pid) ? row('进程名', trace.processName) : '',
+      trace.threadName && trace.threadName !== String(trace.tid) ? row('线程名', trace.threadName) : '',
+    ].join('') : '';
+    area.innerHTML=`<div class="inspector-title">事件详情<button data-action="deselect" aria-label="关闭事件详情">${icon('close',14)}</button></div><div class="inspector-name">${esc(e.name)}</div><span class="badge" style="color:${kernel.color}">${esc(kernel.label)}</span><span class="badge">${esc(KIND[e.kind])}</span><div class="detail-metrics"><div><span>开始时间</span><strong>${fmt(e.start)}</strong> <small>${this.unit}</small></div><div><span>持续时间</span><strong>${fmt(e.duration)}</strong> <small>${this.unit}</small></div></div><div class="detail-section">Execution</div>${row(lane.engine==='SCHEDULER'?'目标核':'物理核',this.eventCoreLabel(e))}${row('执行单元', this.engineLabel(lane))}${row('泳道', this.trackLabel(lane))}${traceRows}${row('结束时间',`${fmt(e.start+e.duration)} ${this.unit}`)}${(() => { const [from, to] = outstandingWindow(e); return to > e.start+e.duration+1e-9 || from < e.start-1e-9 ? row('Outstanding',`${fmt(from)} → ${fmt(to)} ${this.unit}`) + row('在飞时长',`${fmt(to-from)} ${this.unit}`) : ''; })()}${this.rowDepth(lane.id) > 1 ? row('槽位',`O${(this.layout?.positions.get(e.id) ?? 0)+1} / ${this.rowDepth(lane.id)}`) : ''}${row('Task',e.taskId ?? '—')}${e.kind==='schedule'?row('后续取指',e.fetchIds.join(', ')):''}${e.fetchId?row('前置取指',e.fetchId):''}${e.blockId!==undefined?row('Block',e.blockId):''}${e.iteration!==undefined?row('Iteration',e.iteration):''}${e.source?.pc?row('PC',e.source.pc):''}${e.source?.file?row('Source',`${e.source.file}${e.source.line?':'+e.source.line:''}`):''}${Object.keys(e.args ?? {}).length?'<div class="detail-section">Arguments</div>':''}${Object.entries(e.args ?? {}).map(([key,value])=>row(key,typeof value==='string'?value:JSON.stringify(value))).join('')}<div class="detail-section">Dependencies · ${connections.length}</div>${connections.map(d=>{const incoming=d.to===e.id,other=this.eventMap.get(incoming?d.from:d.to);return `<button class="relation" data-select="${esc(other.id)}" title="${esc(d.label || d.type)}"><span>${incoming?'←':'→'} ${esc(other.name)}</span><small>${esc(d.type)}</small></button>`;}).join('') || '<span class="muted" style="font-size:11px">未声明依赖</span>'}`;
   }
   drawTable() {
     if (!this._built || !this._document) return;
@@ -651,11 +707,21 @@ export class PipeTimeline extends HTMLElement {
       return;
     }
     if (this.tab==='pipes') {
-      area.innerHTML=`<table><thead><tr><th>物理核</th><th>PIPE</th><th>行</th><th>并发上限</th><th>执行单元</th><th>事件数</th><th>有效执行时间</th><th>活跃率</th></tr></thead><tbody>${this.lanes.map(l=>{const count=this.coreEvents.filter(e=>e.laneId===l.id).length,busy=this.stats.laneBusy.get(l.id)??0,rate=this.stats.duration?busy/this.stats.duration:0;return `<tr><td>${esc(this._document.cores.find(c=>c.id===l.coreId)?.label)}</td><td>${esc(l.label)}</td><td class="mono">${this.rowDepth(l.id)}${this.laneCollapsed(l.id)?' · 折叠':''}</td><td class="mono">${l.issueWidth ?? '—'}</td><td class="mono">${esc(l.engine==='SCHEDULER'?'调度资源':l.engine==='AIC'?'Cube / AIC':'Vector / AIV')}</td><td>${count}</td><td class="mono">${fmt(busy)} ${this.unit}</td><td><span class="bar-track"><span class="bar-fill" style="display:block;width:${rate*100}%"></span></span>${l.engine==='SCHEDULER'||l.role==='fetch'?'不参与计算活跃率':fmt(rate*100)+'%'}</td></tr>`;}).join('')}</tbody></table><div class="table-note">统计所选物理核的完整场景，不受搜索或 Task / Kernel 筛选影响。“行”为该 Pipe 的 outstanding 槽位数：指令按 issue → complete 的区间装箱，最多铺到 issueWidth；折叠时只显示 1 行。重叠事件取并集，等待、调度、取指、分配和瞬时标记不计入活跃时间。</div>`;
+      const counts = new Map();
+      for (const event of this.coreEvents) counts.set(event.laneId, (counts.get(event.laneId) ?? 0) + 1);
+      const rows = this.lanes.map(lane => {
+        const count = counts.get(lane.id) ?? 0;
+        const busy = this.stats.laneBusy.get(lane.id) ?? 0;
+        const rate = this.stats.duration ? busy / this.stats.duration : 0;
+        const execution = isExecutionLane(lane);
+        const activity = execution ? `<span class="bar-track"><span class="bar-fill" style="display:block;width:${rate*100}%"></span></span>${fmt(rate*100)}%` : '—';
+        return `<tr><td>${esc(this.coreMap.get(lane.coreId)?.label ?? '共享')}</td><td>${esc(this.trackLabel(lane))}</td><td class="mono">${this.rowDepth(lane.id)}${this.laneCollapsed(lane.id) ? ' · 折叠' : ''}</td><td class="mono">${lane.issueWidth ?? '—'}</td><td class="mono">${esc(this.engineLabel(lane))}</td><td>${count}</td><td class="mono">${execution ? `${fmt(busy)} ${this.unit}` : '—'}</td><td>${activity}</td></tr>`;
+      }).join('');
+      area.innerHTML=`<table><thead><tr><th>物理核</th><th>泳道</th><th>行</th><th>并发上限</th><th>执行单元</th><th>事件数</th><th>有效执行时间</th><th>活跃率</th></tr></thead><tbody>${rows}</tbody></table><div class="table-note">活跃率按所选核的计算 / 搬运区间并集统计。调度、取指和诊断泳道单独展示。Outstanding 槽位按 issue → complete 的区间排布。</div>`;
       return;
     }
     const sorted=[...events].sort((a,b)=>a.start-b.start || a.id.localeCompare(b.id));
-    area.innerHTML=`<table><thead><tr><th>事件名称</th><th>TASK</th><th>KERNEL</th><th>物理核</th><th>PIPE</th><th>开始 (${this.unit})</th><th>耗时 (${this.unit})</th><th>类型</th></tr></thead><tbody>${sorted.slice(0,300).map(e=>{const kernel=this.kernelMap.get(e.kernelId),lane=this.laneMap.get(e.laneId);return `<tr data-select="${esc(e.id)}" class="${e.id===this.selectedId?'selected':''}"><td><i class="dot" style="background:${this.eventColor(e)}"></i>${esc(e.name)}</td><td class="mono">${esc(this.taskMap.get(e.taskId)?.label)}</td><td class="mono muted">${esc(kernel.label)}</td><td>${esc(this.eventCoreLabel(e))}</td><td><span class="track">${esc(lane.engine)} / ${esc(lane.pipe)}</span></td><td class="mono">${fmt(e.start)}</td><td class="mono">${fmt(e.duration)}</td><td class="muted">${esc(KIND[e.kind])}</td></tr>`;}).join('')}</tbody></table>${!sorted.length?'<div class="empty-row">没有匹配事件</div>':''}${sorted.length>300?`<div class="table-note">显示前 300 / ${sorted.length} 条事件，请搜索进一步定位。</div>`:''}`;
+    area.innerHTML=`<table><thead><tr><th>事件名称</th><th>TASK</th><th>KERNEL</th><th>物理核</th><th>PIPE</th><th>开始 (${this.unit})</th><th>耗时 (${this.unit})</th><th>类型</th></tr></thead><tbody>${sorted.slice(0,300).map(e=>{const kernel=this.kernelMap.get(e.kernelId),lane=this.laneMap.get(e.laneId);return `<tr data-select="${esc(e.id)}" class="${e.id===this.selectedId?'selected':''}"><td><i class="dot" style="background:${this.eventColor(e)}"></i>${esc(e.name)}</td><td class="mono">${esc(this.taskMap.get(e.taskId)?.label)}</td><td class="mono muted">${esc(kernel.label)}</td><td>${esc(this.eventCoreLabel(e))}</td><td><span class="track">${esc(this.engineLabel(lane))} / ${esc(this.trackLabel(lane))}</span></td><td class="mono">${fmt(e.start)}</td><td class="mono">${fmt(e.duration)}</td><td class="muted">${esc(KIND[e.kind])}</td></tr>`;}).join('')}</tbody></table>${!sorted.length?'<div class="empty-row">没有匹配事件</div>':''}${sorted.length>300?`<div class="table-note">显示前 300 / ${sorted.length} 条事件，请搜索进一步定位。</div>`:''}`;
   }
   bindChart() {
     const chart=this.$('.chart'), tooltip=this.$('.tooltip');
@@ -679,7 +745,7 @@ export class PipeTimeline extends HTMLElement {
       if (!event) { tooltip.hidden=true; return; }
       const lane=this.laneMap.get(event.laneId);
       const flight = outstandingWindow(event), inFlight = flight[1] > event.start+event.duration+1e-9 || flight[0] < event.start-1e-9;
-      tooltip.innerHTML=`<strong>${esc(event.taskId)} · ${esc(event.name)}</strong><span>${esc(this.eventCoreLabel(event))} · ${esc(lane.engine)} / ${esc(lane.pipe)} · ${esc(KIND[event.kind])}</span><br><code>${fmt(event.start)} → ${fmt(event.start+event.duration)} ${esc(this.unit)} · Δ ${fmt(event.duration)} ${esc(this.unit)}</code>${inFlight ? `<br><code>outstanding ${fmt(flight[0])} → ${fmt(flight[1])} ${esc(this.unit)} · Δ ${fmt(flight[1]-flight[0])} ${esc(this.unit)} · O${(this.layout?.positions.get(event.id) ?? 0)+1}</code>` : ''}`;
+      tooltip.innerHTML=`<strong>${esc(event.taskId)} · ${esc(event.name)}</strong><span>${esc(this.eventCoreLabel(event))} · ${esc(this.engineLabel(lane))} / ${esc(this.trackLabel(lane))} · ${esc(KIND[event.kind])}</span><br><code>${fmt(event.start)} → ${fmt(event.start+event.duration)} ${esc(this.unit)} · Δ ${fmt(event.duration)} ${esc(this.unit)}</code>${inFlight ? `<br><code>outstanding ${fmt(flight[0])} → ${fmt(flight[1])} ${esc(this.unit)} · Δ ${fmt(flight[1]-flight[0])} ${esc(this.unit)} · O${(this.layout?.positions.get(event.id) ?? 0)+1}</code>` : ''}`;
       tooltip.hidden=false;
       tooltip.style.left=`${Math.max(8,Math.min(e.clientX+14,window.innerWidth-330))}px`;
       tooltip.style.top=`${Math.max(8,Math.min(e.clientY+16,window.innerHeight-tooltip.offsetHeight-8))}px`;

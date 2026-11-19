@@ -50,10 +50,10 @@
   "status.imported": "Imported JSON",
   "import.eyebrow": "BRING YOUR TRACE",
   "import.title": "Import a trace",
-  "import.description": "Pipe Atlas JSON and Chrome Trace Event JSON are both accepted. Parsing stays in this browser; files up to 30 MB.",
+  "import.description": "Open a Pipe Atlas JSON file, an msinsight operator trace.json, or Chrome Trace Event JSON. Parsing stays in this browser. Files up to 30 MB.",
   "import.drop": "Drop a JSON file here, or choose one",
   "import.or": "or paste JSON directly",
-  "import.placeholder": "{ \"schemaVersion\": \"1.2\", \"metadata\": { … }, \"tasks\": [ … ] }",
+  "import.placeholder": "{ \"schemaVersion\": \"1.4\", \"metadata\": { … }, \"tasks\": [ … ] }",
   "import.tooLarge": "This file is larger than 30 MB. Filter cores or a time window upstream first.",
   "import.empty": "Paste JSON or choose a file first.",
   "import.invalid": "Could not parse the trace",
@@ -73,6 +73,6 @@
   "help.dblclick": "Zoom to that event",
   "help.keys.key": "W / S · A / D · F · / · Esc",
   "help.keys": "Zoom / pan / fit / search / clear",
-  "help.data": "Data contract: devices → cores → lanes, tasks and kernels, scenarios with events. Parsing stays upstream; this panel only validates and renders.",
+  "help.data": "Tracks are grouped by device, physical core, and Cube or Vector instance. For imported msinsight timelines, event details show the original pid and tid.",
   "footer.left": "Structure the data first; then visualize execution."
 }

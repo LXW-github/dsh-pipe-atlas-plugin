@@ -50,10 +50,10 @@
   "status.imported": "导入数据",
   "import.eyebrow": "BRING YOUR TRACE",
   "import.title": "导入流水数据",
-  "import.description": "支持 Pipe Atlas JSON 与 Chrome Trace Event JSON。解析只在当前浏览器进行，文件最大 30 MB。",
+  "import.description": "支持 Pipe Atlas JSON、msinsight 算子 trace.json 和 Chrome Trace Event JSON。文件在当前浏览器解析，最大 30 MB。",
   "import.drop": "拖入 JSON 文件，或点击选择",
   "import.or": "或者直接粘贴",
-  "import.placeholder": "{ \"schemaVersion\": \"1.2\", \"metadata\": { … }, \"tasks\": [ … ] }",
+  "import.placeholder": "{ \"schemaVersion\": \"1.4\", \"metadata\": { … }, \"tasks\": [ … ] }",
   "import.tooLarge": "文件超过 30 MB。请由上游工具先筛选物理核或时间窗口。",
   "import.empty": "请先粘贴 JSON 或选择文件。",
   "import.invalid": "流水数据解析失败",
@@ -73,6 +73,6 @@
   "help.dblclick": "放大到该事件",
   "help.keys.key": "W / S · A / D · F · / · Esc",
   "help.keys": "缩放 / 平移 / 适应 / 搜索 / 清除",
-  "help.data": "数据协议：devices → cores → lanes、tasks 与 kernels、scenarios 事件。解析仍由上游完成，本面板只负责校验与渲染。",
+  "help.data": "泳道按设备、物理核和具体的 Cube / Vector 单元分组。导入 msinsight 时间线后，可在事件详情中查看原始 pid 和 tid。",
   "footer.left": "数据先结构化，执行再可视化。"
 }

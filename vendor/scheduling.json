@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.2",
+  "schemaVersion": "1.4",
   "metadata": {
     "title": "调度 → 取指 → 执行 · Multi-stage scheduling",
     "timeUnit": "us",
@@ -20,15 +20,31 @@
       "id": "core-0",
       "label": "Core 0",
       "deviceId": "npu0",
-      "cubeId": "cube-0",
-      "vectorId": "vector-0"
+      "engines": [
+        {
+          "id": "cube-0",
+          "type": "AIC"
+        },
+        {
+          "id": "vector-0",
+          "type": "AIV"
+        }
+      ]
     },
     {
       "id": "core-1",
       "label": "Core 1",
       "deviceId": "npu0",
-      "cubeId": "cube-1",
-      "vectorId": "vector-1"
+      "engines": [
+        {
+          "id": "cube-1",
+          "type": "AIC"
+        },
+        {
+          "id": "vector-1",
+          "type": "AIV"
+        }
+      ]
     }
   ],
   "lanes": [
@@ -52,73 +68,73 @@
       "id": "c0-fetch",
       "label": "IFETCH",
       "coreId": "core-0",
-      "engine": "AIV",
       "pipe": "IFETCH",
-      "role": "fetch"
+      "role": "fetch",
+      "engineId": "vector-0"
     },
     {
       "id": "c0-s",
       "label": "SCALAR",
       "coreId": "core-0",
-      "engine": "AIV",
-      "pipe": "SCALAR"
+      "pipe": "SCALAR",
+      "engineId": "vector-0"
     },
     {
       "id": "c0-load",
       "label": "MTE2",
       "coreId": "core-0",
-      "engine": "AIV",
-      "pipe": "MTE2"
+      "pipe": "MTE2",
+      "engineId": "vector-0"
     },
     {
       "id": "c0-v",
       "label": "VECTOR",
       "coreId": "core-0",
-      "engine": "AIV",
-      "pipe": "VECTOR"
+      "pipe": "VECTOR",
+      "engineId": "vector-0"
     },
     {
       "id": "c0-store",
       "label": "MTE3",
       "coreId": "core-0",
-      "engine": "AIV",
-      "pipe": "MTE3"
+      "pipe": "MTE3",
+      "engineId": "vector-0"
     },
     {
       "id": "c1-fetch",
       "label": "IFETCH",
       "coreId": "core-1",
-      "engine": "AIV",
       "pipe": "IFETCH",
-      "role": "fetch"
+      "role": "fetch",
+      "engineId": "vector-1"
     },
     {
       "id": "c1-s",
       "label": "SCALAR",
       "coreId": "core-1",
-      "engine": "AIV",
-      "pipe": "SCALAR"
+      "pipe": "SCALAR",
+      "engineId": "vector-1"
     },
     {
       "id": "c1-load",
       "label": "MTE2",
       "coreId": "core-1",
-      "engine": "AIV",
-      "pipe": "MTE2"
+      "pipe": "MTE2",
+      "engineId": "vector-1"
     },
     {
       "id": "c1-v",
       "label": "VECTOR",
       "coreId": "core-1",
-      "engine": "AIV",
-      "pipe": "VECTOR"
+      "pipe": "VECTOR",
+      "engineId": "vector-1"
     },
     {
       "id": "c1-store",
       "label": "MTE3",
       "coreId": "core-1",
-      "engine": "AIV",
-      "pipe": "MTE3"
+      "pipe": "MTE3",
+      "engineId": "vector-1"
     }
   ],
   "tasks": [

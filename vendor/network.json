@@ -48,6 +48,13 @@
   ],
   "lanes": [
     {
+      "id": "c0-all",
+      "label": "ALL",
+      "coreId": "core-0",
+      "engine": "AIV",
+      "pipe": "ALL"
+    },
+    {
       "id": "c0-s",
       "label": "SCALAR",
       "coreId": "core-0",
@@ -102,6 +109,13 @@
       "coreId": "core-0",
       "engine": "AIC",
       "pipe": "FIXP"
+    },
+    {
+      "id": "c1-all",
+      "label": "ALL",
+      "coreId": "core-1",
+      "engine": "AIV",
+      "pipe": "ALL"
     },
     {
       "id": "c1-s",
@@ -160,6 +174,13 @@
       "pipe": "FIXP"
     },
     {
+      "id": "c2-all",
+      "label": "ALL",
+      "coreId": "core-2",
+      "engine": "AIV",
+      "pipe": "ALL"
+    },
+    {
       "id": "c2-s",
       "label": "SCALAR",
       "coreId": "core-2",
@@ -214,6 +235,13 @@
       "coreId": "core-2",
       "engine": "AIC",
       "pipe": "FIXP"
+    },
+    {
+      "id": "c3-all",
+      "label": "ALL",
+      "coreId": "core-3",
+      "engine": "AIV",
+      "pipe": "ALL"
     },
     {
       "id": "c3-s",
@@ -3798,7 +3826,7 @@
         },
         {
           "id": "t0-c0-barrier",
-          "laneId": "c0-s",
+          "laneId": "c0-all",
           "kernelId": "matmul",
           "taskId": "task0",
           "blockId": "0",
@@ -3920,7 +3948,7 @@
         },
         {
           "id": "t0-c1-barrier",
-          "laneId": "c1-s",
+          "laneId": "c1-all",
           "kernelId": "matmul",
           "taskId": "task0",
           "blockId": "1",
@@ -4042,7 +4070,7 @@
         },
         {
           "id": "t0-c2-barrier",
-          "laneId": "c2-s",
+          "laneId": "c2-all",
           "kernelId": "matmul",
           "taskId": "task0",
           "blockId": "2",
@@ -4164,7 +4192,7 @@
         },
         {
           "id": "t0-c3-barrier",
-          "laneId": "c3-s",
+          "laneId": "c3-all",
           "kernelId": "matmul",
           "taskId": "task0",
           "blockId": "3",
@@ -4253,7 +4281,7 @@
         },
         {
           "id": "t1-c0-barrier",
-          "laneId": "c0-s",
+          "laneId": "c0-all",
           "kernelId": "norm",
           "taskId": "task1",
           "blockId": "0",
@@ -4342,7 +4370,7 @@
         },
         {
           "id": "t1-c1-barrier",
-          "laneId": "c1-s",
+          "laneId": "c1-all",
           "kernelId": "norm",
           "taskId": "task1",
           "blockId": "1",
@@ -4431,7 +4459,7 @@
         },
         {
           "id": "t1-c2-barrier",
-          "laneId": "c2-s",
+          "laneId": "c2-all",
           "kernelId": "norm",
           "taskId": "task1",
           "blockId": "2",
@@ -4520,7 +4548,7 @@
         },
         {
           "id": "t1-c3-barrier",
-          "laneId": "c3-s",
+          "laneId": "c3-all",
           "kernelId": "norm",
           "taskId": "task1",
           "blockId": "3",
@@ -4609,7 +4637,7 @@
         },
         {
           "id": "t2-c0-barrier",
-          "laneId": "c0-s",
+          "laneId": "c0-all",
           "kernelId": "residual",
           "taskId": "task2",
           "blockId": "0",
@@ -4698,7 +4726,7 @@
         },
         {
           "id": "t2-c1-barrier",
-          "laneId": "c1-s",
+          "laneId": "c1-all",
           "kernelId": "residual",
           "taskId": "task2",
           "blockId": "1",
@@ -4787,7 +4815,7 @@
         },
         {
           "id": "t2-c2-barrier",
-          "laneId": "c2-s",
+          "laneId": "c2-all",
           "kernelId": "residual",
           "taskId": "task2",
           "blockId": "2",
@@ -4876,7 +4904,7 @@
         },
         {
           "id": "t2-c3-barrier",
-          "laneId": "c3-s",
+          "laneId": "c3-all",
           "kernelId": "residual",
           "taskId": "task2",
           "blockId": "3",
@@ -4965,7 +4993,7 @@
         },
         {
           "id": "t3-c0-barrier",
-          "laneId": "c0-s",
+          "laneId": "c0-all",
           "kernelId": "norm",
           "taskId": "task3",
           "blockId": "0",
@@ -5054,7 +5082,7 @@
         },
         {
           "id": "t3-c1-barrier",
-          "laneId": "c1-s",
+          "laneId": "c1-all",
           "kernelId": "norm",
           "taskId": "task3",
           "blockId": "1",
@@ -5143,7 +5171,7 @@
         },
         {
           "id": "t3-c2-barrier",
-          "laneId": "c2-s",
+          "laneId": "c2-all",
           "kernelId": "norm",
           "taskId": "task3",
           "blockId": "2",
@@ -5232,7 +5260,7 @@
         },
         {
           "id": "t3-c3-barrier",
-          "laneId": "c3-s",
+          "laneId": "c3-all",
           "kernelId": "norm",
           "taskId": "task3",
           "blockId": "3",
@@ -5354,7 +5382,7 @@
         },
         {
           "id": "t4-c0-barrier",
-          "laneId": "c0-s",
+          "laneId": "c0-all",
           "kernelId": "project",
           "taskId": "task4",
           "blockId": "0",
@@ -5476,7 +5504,7 @@
         },
         {
           "id": "t4-c1-barrier",
-          "laneId": "c1-s",
+          "laneId": "c1-all",
           "kernelId": "project",
           "taskId": "task4",
           "blockId": "1",
@@ -5598,7 +5626,7 @@
         },
         {
           "id": "t4-c2-barrier",
-          "laneId": "c2-s",
+          "laneId": "c2-all",
           "kernelId": "project",
           "taskId": "task4",
           "blockId": "2",
@@ -5720,7 +5748,7 @@
         },
         {
           "id": "t4-c3-barrier",
-          "laneId": "c3-s",
+          "laneId": "c3-all",
           "kernelId": "project",
           "taskId": "task4",
           "blockId": "3",
